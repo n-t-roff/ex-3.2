@@ -367,10 +367,7 @@ merror1(seekpt)
 morelines()
 {
 
-	if ((int) sbrk(1024 * sizeof (line)) == -1)
-		return (-1);
-	endcore += 1024;
-	return (0);
+	return (-1);
 }
 
 nonzero()

@@ -58,8 +58,6 @@ setterm(type)
 	i = LINES = tgetnum("li");
 	if (LINES <= 5)
 		LINES = 24;
-	if (LINES > 48)
-		LINES = 48;
 	l = LINES;
 	if (ex_ospeed < B1200)
 		l /= 2;

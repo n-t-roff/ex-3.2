@@ -459,7 +459,7 @@ int canundo;
 	if (trace)
 		fprintf(trace, "macpush(%s)",st);
 #endif
-	if (strlen(vmacp) + strlen(st) > BUFSIZ)
+	if (vmacp && strlen(vmacp) + strlen(st) > BUFSIZ)
 		error("Macro too long@ - maybe recursive?");
 	if (vmacp) {
 		strcpy(tmpbuf, vmacp);
