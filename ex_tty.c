@@ -7,20 +7,23 @@
  * and calculation of flags at entry or after
  * a shell escape which may change them.
  */
-short	ospeed = -1;
+/* short	ospeed = -1; */
 
 gettmode()
 {
 
-	if (gtty(1, &tty) < 0)
+	if (tcgetattr(1, &tty) < 0)
 		return;
-	if (ospeed != tty.sg_ospeed)
-		value(SLOWOPEN) = tty.sg_ospeed < B1200;
-	ospeed = tty.sg_ospeed;
-	normf = tty.sg_flags;
-	UPPERCASE = (tty.sg_flags & LCASE) != 0;
-	GT = (tty.sg_flags & XTABS) != XTABS && !XT;
-	NONL = (tty.sg_flags & CRMOD) == 0;
+	ex_ospeed = cfgetospeed(&tty);
+	value(SLOWOPEN) = ex_ospeed < B1200;
+	normf = tty;
+#ifdef IUCLC
+	UPPERCASE = (tty.c_iflag & IUCLC) != 0;
+#endif
+#ifdef TAB3
+	GT = (tty.c_oflag & TABDLY) != TAB3 && !XT;
+#endif
+	NONL = (tty.c_oflag & ONLCR) == 0;
 }
 
 char *xPC;
@@ -58,9 +61,9 @@ setterm(type)
 	if (LINES > 48)
 		LINES = 48;
 	l = LINES;
-	if (ospeed < B1200)
+	if (ex_ospeed < B1200)
 		l /= 2;
-	else if (ospeed < B2400)
+	else if (ex_ospeed < B2400)
 		l = (l * 2) / 3;
 	aoftspace = tspace;
 	zap();

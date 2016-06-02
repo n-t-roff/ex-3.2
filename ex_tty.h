@@ -25,7 +25,7 @@
  * before the capability to say 12 milliseconds per affected whatever
  * (currently always line).  Capabilities where this makes sense say P*.
  */
-char	tspace[256];		/* Space for capability strings */
+char	tspace[1024];		/* Space for capability strings */
 char	*aoftspace;		/* Address of tspace for relocation */
 
 char	*AL;			/* P* Add new blank line */
@@ -105,9 +105,9 @@ short	destline;
 #ifdef 	TIOCSETC
 struct	tchars ottyc, nttyc;	/* For V7 character masking */
 #endif
-struct	sgttyb tty;		/* Always stty/gtty using this one structure */
+struct	termios tty;		/* Always stty/gtty using this one structure */
 bool	normtty;		/* Have to restor normal mode from normf */
-int	normf;			/* Restore tty flags to this (someday) */
+struct	termios normf;			/* Restore tty flags to this (someday) */
 
 short	WBOT;
 short	WECHO;

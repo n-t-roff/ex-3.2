@@ -647,11 +647,11 @@ uexp:
  * and indicates filtering.  If input is implied, newstdin
  * must have been setup already.
  */
-unixex(opt, up, newstdin, mode)
-	char *opt, *up;
-	int newstdin, mode;
+struct termios
+unixex(char *opt, char *up, int newstdin, int mode)
 {
-	int pvec[2], f;
+	int pvec[2];
+	struct termios f;
 
 	signal(SIGINT, SIG_IGN);
 	if (inopen)
@@ -720,9 +720,8 @@ unixex(opt, up, newstdin, mode)
  * F is for restoration of tty mode if from open/visual.
  * C flags suppression of printing.
  */
-unixwt(c, f)
-	bool c;
-	int f;
+void
+unixwt(bool c, struct termios f)
 {
 
 	waitfor();
@@ -747,7 +746,7 @@ filter(mode)
 	register int mode;
 {
 	static int pvec[2];
-	register int f;
+	struct termios f;
 	register int lines = lineDOL();
 
 	mode++;

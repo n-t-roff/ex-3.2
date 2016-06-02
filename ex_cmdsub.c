@@ -13,6 +13,8 @@
 bool	endline = 1;
 line	*tad1;
 
+static void splitit(void);
+
 /*
  * Append after line a lines returned by function f.
  * Be careful about intermediate states to avoid scramble
@@ -726,8 +728,8 @@ zop2(lines, op)
 	plines(addr1, addr2, 0);
 }
 
-static
-splitit()
+static void
+splitit(void)
 {
 	register int l;
 
@@ -969,7 +971,7 @@ mapcmd(un)
 	ignore(skipwh());
 	for (p=lhs; ; ) {
 		c = getchar();
-		if (c == CTRL(v)) {
+		if (c == CTRL('v')) {
 			c = getchar();
 		} else if (any(c, " \t")) {
 			if (un)
@@ -993,7 +995,7 @@ mapcmd(un)
 		error("Missing rhs");
 	for (p=rhs; ; ) {
 		c = getchar();
-		if (c == CTRL(v)) {
+		if (c == CTRL('v')) {
 			c = getchar();
 		} else if (endcmd(c)) {
 			ungetchar(c);

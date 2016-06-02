@@ -47,6 +47,7 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <sys/stat.h>
+#include <termios.h>
 
 extern	int errno;
 
@@ -127,9 +128,9 @@ struct	option options[NOPTS + 1];
  */
 #define	QUOTE	0200
 #define	TRIM	0177
-#define	CTRL(c)	('c' & 037)
-#define	NL	CTRL(j)
-#define	CR	CTRL(m)
+#define	CTRL(c)	(c & 037)
+#define	NL	CTRL('j')
+#define	CR	CTRL('m')
 #define	DELETE	0177		/* See also ATTN, QUIT in ex_tune.h */
 #define	ESCAPE	033
 
@@ -173,7 +174,7 @@ line	names['z'-'a'+2];	/* Mark registers a-z,' */
 int	notecnt;		/* Count for notify (to visual from cmd) */
 bool	numberf;		/* Command should run in number mode */
 char	obuf[BUFSIZ];		/* Buffer for tty output */
-short	ospeed;			/* Output speed (from gtty) */
+speed_t	ex_ospeed;			/* Output speed (from gtty) */
 int	otchng;			/* Backup tchng to find changes in macros */
 short	peekc;			/* Peek ahead character (cmd mode input) */
 char	*pkill[2];		/* Trim for put with ragged (LISP) delete */
@@ -243,6 +244,7 @@ line	*one;			/* First line */
 line	*truedol;		/* End of all lines, including saves */
 line	*unddol;		/* End of undo saved lines */
 line	*zero;			/* Points to empty slot before one */
+int	linelimit;
 
 /*
  * Undo information
@@ -338,6 +340,11 @@ int	vintr();
 int	vputch();
 int	vshftop();
 int	yank();
+void	ostop(struct termios);
+struct termios setty(struct termios);
+struct termios unixex(char *, char *, int, int);
+struct termios ostart(void);
+void	unixwt(bool, struct termios);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

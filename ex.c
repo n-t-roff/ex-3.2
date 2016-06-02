@@ -88,7 +88,7 @@ main(ac, av)
 	 * get messed up if an interrupt comes in quickly.
 	 */
 	gTTY(1);
-	normf = tty.sg_flags;
+	normf = tty;
 	ppid = getpid();
 	/*
 	 * Defend against d's, v's, and a's in directories of
@@ -146,8 +146,9 @@ main(ac, av)
 	 * this as ed does, saving a little core, but it will probably
 	 * not often make much difference.
 	 */
-	fendcore = (line *) sbrk(0);
-	endcore = fendcore - 2;
+	linelimit = 2048;
+	fendcore = malloc(linelimit * sizeof(line *));
+	endcore = fendcore + linelimit - 1;
 
 	/*
 	 * Process flag arguments.

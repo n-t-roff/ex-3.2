@@ -16,7 +16,7 @@ ignchar()
 
 	do
 		c = getcd();
-	while (c == CTRL(d));
+	while (c == CTRL('d'));
 }
 
 getchar()
@@ -25,7 +25,7 @@ getchar()
 
 	do
 		c = getcd();
-	while (c == CTRL(d));
+	while (c == CTRL('d'));
 	return (c);
 }
 
@@ -39,7 +39,7 @@ again:
 		return (c);
 	c &= TRIM;
 	if (!inopen)
-		if (c == CTRL(d))
+		if (c == CTRL('d'))
 			setlastchar('\n');
 		else if (junk(c)) {
 			checkjunk(c);
@@ -67,7 +67,7 @@ peekcd()
 getach()
 {
 	register int c;
-	static char inline[128];
+	static char in_line[128];
 
 	c = peekc;
 	if (c != 0) {
@@ -91,18 +91,18 @@ top:
 	}
 	flush();
 	if (intty) {
-		c = read(0, inline, sizeof inline - 4);
+		c = read(0, in_line, sizeof in_line - 4);
 		if (c < 0)
 			return (lastc = EOF);
-		if (c == 0 || inline[c-1] != '\n')
-			inline[c++] = CTRL(d);
-		if (inline[c-1] == '\n')
+		if (c == 0 || in_line[c-1] != '\n')
+			in_line[c++] = CTRL('d');
+		if (in_line[c-1] == '\n')
 			noteinp();
-		inline[c] = 0;
+		in_line[c] = 0;
 		for (c--; c >= 0; c--)
-			if (inline[c] == 0)
-				inline[c] = QUOTE;
-		input = inline;
+			if (in_line[c] == 0)
+				in_line[c] = QUOTE;
+		input = in_line;
 		goto top;
 	}
 	if (read(0, (char *) &lastc, 1) != 1)
@@ -140,7 +140,7 @@ gettty()
 				lastin = lindent(dot + 1);
 #endif
 			tab(lastin + offset);
-			while ((c = getcd()) == CTRL(d)) {
+			while ((c = getcd()) == CTRL('d')) {
 				if (lastin == 0 && isatty(0) == -1) {
 					holdcm = 0;
 					return (EOF);
@@ -153,7 +153,7 @@ gettty()
 			case '^':
 			case '0':
 				ch = getcd();
-				if (ch == CTRL(d)) {
+				if (ch == CTRL('d')) {
 					if (c == '0')
 						lastin = 0;
 					if (!OS) {

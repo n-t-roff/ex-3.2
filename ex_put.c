@@ -19,6 +19,8 @@
  * During open/visual, outchar and putchar will be set to
  * routines in the file ex_vput.c (vputchar, vinschar, etc.).
  */
+static void normal(struct termios);
+
 int	(*Outchar)() = termchar;
 int	(*Putchar)() = normchar;
 int	(*Pline)() = normline;
@@ -732,7 +734,13 @@ pstart()
 	flusho();
 	pfast = 1;
 	normtty++;
-	tty.sg_flags = normf & ~(ECHO|XTABS|CRMOD);
+	tty = normf;
+	tty.c_oflag &= ~(ONLCR
+#ifdef TAB3
+	|TAB3
+#endif
+	);
+	tty.c_lflag &= ~ECHO;
 	sTTY(1);
 }
 
@@ -754,23 +762,26 @@ pstop()
 /*
  * Prep tty for open mode.
  */
-ostart()
+struct termios
+ostart(void)
 {
-	int f;
+	struct termios f;
 
 	if (!intty)
 		error("Open and visual must be used interactively");
 	gTTY(1);
 	normtty++;
-	f = tty.sg_flags;
-#ifdef CBREAK
-	tty.sg_flags = (normf &~ (ECHO|XTABS|CRMOD)) | CBREAK;
-#else
-	tty.sg_flags = (normf &~ (ECHO|XTABS|CRMOD)) | RAW;
+	f = tty;
+	tty = normf;
+	tty.c_iflag &= ~ICRNL;
+	tty.c_lflag &= ~(ECHO|ICANON);
+	tty.c_oflag &= ~(
+#ifdef TAB3
+	TAB3|
 #endif
-#ifdef TIOCGETC
-	nttyc.t_quitc = nttyc.t_startc = nttyc.t_stopc = '\377';
-#endif
+	ONLCR);
+	tty.c_cc[VMIN] = 1;
+	tty.c_cc[VTIME] = 1;
 	sTTY(1);
 	putpad(VS);
 	putpad(KS);
@@ -781,11 +792,11 @@ ostart()
 /*
  * Stop open, restoring tty modes.
  */
-ostop(f)
-	int f;
+void
+ostop(struct termios f)
 {
 
-	pfast = (f & CRMOD) == 0;
+	pfast = (f.c_oflag & ONLCR) == 0;
 	termreset(), fgoto(), flusho();
 	normal(f);
 	putpad(VE);
@@ -817,8 +828,8 @@ vraw()
 /*
  * Restore flags to normal state f.
  */
-normal(f)
-	int f;
+static void
+normal(struct termios f)
 {
 
 	if (normtty > 0) {
@@ -830,18 +841,12 @@ normal(f)
 /*
  * Straight set of flags to state f.
  */
-setty(f)
-	int f;
+struct termios
+setty(struct termios f)
 {
-	register int ot = tty.sg_flags;
+	struct termios ot = tty;
 
-#ifdef TIOCGETC
-	if (f == normf)
-		nttyc = ottyc;
-	else
-		nttyc.t_quitc = nttyc.t_startc = nttyc.t_stopc = '\377';
-#endif
-	tty.sg_flags = f;
+	tty = f;
 	sTTY(1);
 	return (ot);
 }
@@ -850,32 +855,14 @@ gTTY(i)
 	int i;
 {
 
-	ignore(gtty(i, &tty));
-#ifdef TIOCGETC
-	ioctl(i, TIOCGETC, &ottyc);
-	nttyc = ottyc;
-#endif
+	tcgetattr(i, &tty);
 }
 
 sTTY(i)
 	int i;
 {
 
-/*
- * Bug in USG tty driver, put out a null char as a patch.
- */
-#ifdef USG
-	if (tty.sg_ospeed == B1200)
-		write(1, "", 1);
-#endif
-#ifdef TIOCSETN
-	ioctl(i, TIOCSETN, &tty);
-#else
-	stty(i, &tty);
-#endif
-#ifdef TIOCSETC
-	ioctl(i, TIOCSETC, &nttyc);
-#endif
+	tcsetattr(i, TCSAFLUSH, &tty);
 }
 
 /*

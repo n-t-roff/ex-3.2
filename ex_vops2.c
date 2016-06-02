@@ -453,9 +453,9 @@ vgetline(cnt, gcursor, aescaped)
 			 * from untyped input when we started.
 			 * Map users erase to ^H, kill to -1 for switch.
 			 */
-			if (c == tty.sg_erase)
-				c = CTRL(h);
-			else if (c == tty.sg_kill)
+			if (c == tty.c_cc[VERASE])
+				c = CTRL('h');
+			else if (c == tty.c_cc[VKILL])
 				c = -1;
 			switch (c) {
 
@@ -481,7 +481,7 @@ vgetline(cnt, gcursor, aescaped)
 			 *		This is hard because stuff has
 			 *		already been saved for repeat.
 			 */
-			case CTRL(h):
+			case CTRL('h'):
 bakchar:
 				cp = gcursor - 1;
 				if (cp < ogcursor) {
@@ -502,7 +502,7 @@ bakchar:
 			/*
 			 * ^W		Back up a white/non-white word.
 			 */
-			case CTRL(w):
+			case CTRL('w'):
 				wdkind = 1;
 				for (cp = gcursor; cp > ogcursor && isspace(cp[-1]); cp--)
 					continue;
@@ -540,7 +540,8 @@ vbackup:
 				putchar('\\');
 				vcsync();
 				c = getkey();
-				if (c == tty.sg_erase || c == tty.sg_kill) {
+				if (c == tty.c_cc[VERASE]
+				    || c == tty.c_cc[VKILL]) {
 					vgoto(y, x);
 					if (doomed >= 0)
 						doomed++;
@@ -557,13 +558,13 @@ vbackup:
 			 *
 			 * ^V		Synonym for ^Q
 			 */
-			case CTRL(q):
-			case CTRL(v):
+			case CTRL('q'):
+			case CTRL('v'):
 				x = destcol, y = destline;
 				putchar('^');
 				vgoto(y, x);
 				c = getkey();
-#ifdef TIOCSETC
+#if defined(TIOCSETC) && !defined(USG3TTY)
 				if (c == ATTN)
 					c = nttyc.t_intrc;
 #endif
@@ -623,8 +624,8 @@ vbackup:
 		 *		Unless in repeat where this means these
 		 *		were superquoted in.
 		 */
-		case CTRL(d):
-		case CTRL(t):
+		case CTRL('d'):
+		case CTRL('t'):
 			if (vglobp)
 				goto def;
 			/* fall into ... */
@@ -632,11 +633,11 @@ vbackup:
 		/*
 		 * ^D|QUOTE	Is a backtab (in a repeated command).
 		 */
-		case CTRL(d) | QUOTE:
+		case CTRL('d') | QUOTE:
 			*gcursor = 0;
 			cp = vpastwh(genbuf);
 			c = whitecnt(genbuf);
-			if (ch == CTRL(t)) {
+			if (ch == CTRL('t')) {
 				/*
 				 * ^t just generates new indent replacing
 				 * current white space rounded up to soft

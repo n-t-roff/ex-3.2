@@ -32,10 +32,11 @@ LIBDIR=	/usr/lib
 FOLD=	${BINDIR}/fold
 CTAGS=	${BINDIR}/ctags
 XSTR=	${BINDIR}/xstr
-DEBUGFLAGS=	-DTRACE
-NONDEBUGFLAGS=	-O
-CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVFORK -DVMUNIX ${NONDEBUGFLAGS}
-TERMLIB=	-ltermlib
+DEBUGFLAGS=	-g -Wall -Wextra
+NONDEBUGFLAGS=	
+CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
+	${DEBUGFLAGS}
+TERMLIB=	-ltinfo
 MKSTR=	${BINDIR}/mkstr
 CXREF=	${BINDIR}/cxref
 INCLUDE=/usr/include
@@ -44,27 +45,23 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	printf.o strings.o
+	printf.o
 
-all:	a.out exrecover expreserve tags
+all:	a.out #exrecover expreserve tags
 
 .c.o:
-#	${MKSTR} - ex${VERSION}strings x $*.c
-	${CC} -E ${CFLAGS} $*.c | ${XSTR} -c -
-#	rm -f x$*.c
-	${CC} ${CFLAGS} -c x.c 
-	mv x.o $*.o
+	${CC} ${CFLAGS} -c $<
 
 a.out: ${OBJS}
-	cc -i ${OBJS} ${TERMLIB}
+	${CC} ${OBJS} ${TERMLIB}
 
 tags:
 	${CTAGS} -w *.h *.c
 
-${OBJS}: ex_vars.h
+${OBJS}: ex_vars.h ex.h makefile ex_tune.h
 
-ex_vars.h:
-	csh makeoptions ${CFLAGS}
+#ex_vars.h:
+#	csh makeoptions ${CFLAGS}
 
 strings.o: strings
 	${XSTR}

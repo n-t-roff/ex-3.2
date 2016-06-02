@@ -219,13 +219,13 @@ readecho(c)
 	ignore(vgetline(0, genbuf + 1, &waste));
 	vscrap();
 	Pline = OP;
-	if (Peekkey != ATTN && Peekkey != QUIT && Peekkey != CTRL(h)) {
+	if (Peekkey != ATTN && Peekkey != QUIT && Peekkey != CTRL('h')) {
 		cursor = sc;
 		vclreol();
 		return (0);
 	}
 blewit:
-	OPeek = Peekkey==CTRL(h) ? 0 : Peekkey; Peekkey = 0;
+	OPeek = Peekkey==CTRL('h') ? 0 : Peekkey; Peekkey = 0;
 	splitw = 0;
 	vclean();
 	vshow(dot, NOLINE);
@@ -349,7 +349,7 @@ beep()
 	if (VB)
 		vputp(VB, 0);
 	else
-		vputc(CTRL(g));
+		vputc(CTRL('g'));
 }
 
 /*
