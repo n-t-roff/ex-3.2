@@ -7,7 +7,8 @@
  */
 char	optname[ONMSZ];
 
-set()
+void
+set(void)
 {
 	register char *cp;
 	register struct option *op;

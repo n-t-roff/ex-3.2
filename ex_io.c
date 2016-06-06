@@ -31,8 +31,8 @@ long	cntodd;			/* Count of non-ascii characters " */
  * If comm is E then command is doomed and we are
  * parsing just so user won't have to retype the name.
  */
-filename(comm)
-	int comm;
+void
+filename(int comm)
 {
 	register int c = comm, d;
 	register int i;
@@ -176,8 +176,8 @@ filexp:
  * Glob the argument words in genbuf, or if no globbing
  * is implied, just split them up directly.
  */
-glob(gp)
-	struct glob *gp;
+void
+glob(struct glob *gp)
 {
 	int pvec[2];
 	register char **argv = gp->argv;
@@ -894,7 +894,8 @@ getfile()
 /*
  * Write a range onto the io stream.
  */
-putfile()
+void
+putfile(void)
 {
 	line *a1;
 	register char *fp, *lp;
@@ -952,9 +953,8 @@ wrerror()
  */
 static	short slevel;
 
-source(fil, okfail)
-	char *fil;
-	bool okfail;
+void
+source(char *fil, bool okfail)
 {
 	jmp_buf osetexit;
 	register int saveinp, ointty, oerrno;

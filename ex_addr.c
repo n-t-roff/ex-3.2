@@ -51,7 +51,8 @@ setdot1()
  * to delete 5 lines, etc.
  * Such nonsense is implemented by setcount.
  */
-setcount()
+void
+setcount(void)
 {
 	register int cnt;
 
@@ -87,7 +88,8 @@ getnum()
  * Set the default addresses for commands which use the whole
  * buffer as default, notably write.
  */
-setall()
+void
+setall(void)
 {
 
 	if (addr2 == 0) {

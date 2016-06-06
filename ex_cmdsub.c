@@ -13,7 +13,9 @@
 bool	endline = 1;
 line	*tad1;
 
+static void somechange(void);
 static void splitit(void);
+static void addmac(char *,char *,char *);
 
 /*
  * Append after line a lines returned by function f.
@@ -170,7 +172,8 @@ deletenone()
  * Crush out the undo save area, moving the open/visual
  * save area down in its place.
  */
-squish()
+void
+squish(void)
 {
 	register line *a1 = dol + 1, *a2 = unddol + 1, *a3 = truedol + 1;
 
@@ -331,7 +334,8 @@ getput()
 	return (0);
 }
 
-put()
+void
+put(void)
 {
 	register int cnt;
 
@@ -446,8 +450,8 @@ shift(c, cnt)
  * Find a tag in the tags file.
  * Most work here is in parsing the tags file itself.
  */
-tagfind(quick)
-	bool quick;
+void
+tagfind(bool quick)
 {
 	char cmdbuf[BUFSIZ];
 	char filebuf[FNSIZE];
@@ -648,9 +652,8 @@ zop(hadpr)
 	zop2(lines, op);
 }
 
-zop2(lines, op)
-	register int lines;
-	register int op;
+void
+zop2(int lines, int op)
 {
 	register line *split;
 
@@ -903,7 +906,8 @@ undo(c)
  * Be (almost completely) sure there really
  * was a change, before claiming to undo.
  */
-somechange()
+static void
+somechange(void)
 {
 	register line *ip, *jp;
 
@@ -940,8 +944,9 @@ somechange()
  * Map command:
  * map src dest
  */
-mapcmd(un)
-	int un;	/* true if this is unmap command */
+void
+mapcmd(int un)
+	/* int un;	/ * true if this is unmap command */
 {
 	char lhs[10], rhs[100];	/* max sizes resp. */
 	register char *p;
@@ -1031,8 +1036,8 @@ mapcmd(un)
  * this overrides the mapping. There is no recursion. Unmap is done by
  * using NOSTR for dest.
  */
-addmac(src,dest,dname)
-	register char *src, *dest, *dname;
+static void
+addmac(char *src,char *dest,char *dname)
 {
 	register int slot, zer;
 

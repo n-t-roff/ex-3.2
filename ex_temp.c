@@ -17,7 +17,10 @@ int	havetmp;
 short	tfile = -1;
 short	rfile = -1;
 
-fileinit()
+static void rbflush(void);
+
+void
+fileinit(void)
 {
 	register char *p;
 	register int i, j;
@@ -194,7 +197,8 @@ blkio(b, buf, iofcn)
  * Synchronize the state of the temporary file in case
  * a crash occurs.
  */
-synctmp()
+void
+synctmp(void)
 {
 	register int cnt;
 	register line *a;
@@ -523,7 +527,8 @@ YANKline()
 		*rbufcp = 0;
 }
 
-rbflush()
+static void
+rbflush(void)
 {
 	register struct strreg *sp = strp;
 

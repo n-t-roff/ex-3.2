@@ -9,6 +9,12 @@
  * Really hard stuff here is utilizing insert character operations
  * on intelligent terminals which differs widely from terminal to terminal.
  */
+static void vmaktop(int, char *);
+static void vneedpos(int);
+static void vnpins(int);
+static void godm(void);
+static void enddm(void);
+
 vclear()
 {
 
@@ -58,7 +64,8 @@ vclrlin(l, tp)
 /*
  * Clear to the end of the current physical line
  */
-vclreol()
+void
+vclreol(void)
 {
 	register int i, j;
 	register char *tp;
@@ -98,8 +105,8 @@ vclreol()
  * If work here is being held off, just remember, in
  * heldech, if work needs to be done, don't do anything.
  */
-vclrech(didphys)
-	bool didphys;
+void
+vclrech(bool didphys)
 {
 
 	if (Peekkey == ATTN)
@@ -255,8 +262,8 @@ vigotoCL(x)
 /*
  * Move cursor to line y, column x, handling wraparound and scrolling.
  */
-vgoto(y, x)
-	register int y, x;
+void
+vgoto(int y, int x)
 {
 	register char *tp;
 	register int c;
@@ -436,9 +443,8 @@ vprepins()
 	}
 }
 
-vmaktop(p, cp)
-	register int p;
-	char *cp;
+static void
+vmaktop(int p, char *cp)
 {
 	register int i;
 	char temp[TUBECOLS];
@@ -464,8 +470,8 @@ vmaktop(p, cp)
  * for tabs) and code assumes this in several place
  * to make life simpler.
  */
-vinschar(c)
-	char c;
+void
+vinschar(int c)
 {
 	register int i;
 	register char *tp;
@@ -667,8 +673,8 @@ vrigid()
  * On a dumb terminal we may infact redisplay the rest of the
  * screen here brute force to keep it pretty.
  */
-vneedpos(cnt)
-	int cnt;
+static void
+vneedpos(int cnt)
 {
 	register int d = DEPTH(vcline);
 	register int rmdr = d * WCOLS - linend;
@@ -679,8 +685,8 @@ vneedpos(cnt)
 	vnpins(1);
 }
 
-vnpins(dosync)
-	int dosync;
+static void
+vnpins(int dosync)
 {
 	register int d = DEPTH(vcline);
 	register int e;
@@ -955,7 +961,8 @@ viin(c)
  * is the same as that which goes into insert
  * mode, then we are in delete mode already.
  */
-godm()
+static void
+godm(void)
 {
 
 	if (insmode) {
@@ -974,7 +981,8 @@ godm()
  * if we just moved over to delete space from part of
  * a tab (above).
  */
-enddm()
+static void
+enddm(void)
 {
 
 	if (eq(DM, IM)) {
@@ -1018,8 +1026,8 @@ endim()
  * you can erase overstrikes with some work.  CRT's which do underlining
  * implicitly which has to be erased (like CONCEPTS) are also handled.
  */
-vputchar(c)
-	register int c;
+void
+vputchar(int c)
 {
 	register char *tp;
 	register int d;
@@ -1184,8 +1192,8 @@ def:
  * Delete display positions stcol through endcol.
  * Amount of use of special terminal features here is limited.
  */
-physdc(stcol, endcol)
-	int stcol, endcol;
+void
+physdc(int stcol, int endcol)
 {
 	register char *tp, *up;
 	char *tpe;

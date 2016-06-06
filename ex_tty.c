@@ -9,7 +9,8 @@
  */
 /* short	ospeed = -1; */
 
-gettmode()
+void
+gettmode(void)
 {
 
 	if (tcgetattr(1, &tty) < 0)

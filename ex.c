@@ -146,9 +146,14 @@ main(ac, av)
 	 * this as ed does, saving a little core, but it will probably
 	 * not often make much difference.
 	 */
+#ifdef UNIX_SBRK
+	fendcore = (line *) sbrk(0);
+	endcore = fendcore - 2;
+#else
 	linelimit = 0x4000;
 	fendcore = malloc(linelimit * sizeof(line *));
 	endcore = fendcore + linelimit - 1;
+#endif
 
 	/*
 	 * Process flag arguments.
