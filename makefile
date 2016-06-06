@@ -32,9 +32,13 @@ LIBDIR=	/usr/lib
 FOLD=	${BINDIR}/fold
 CTAGS=	${BINDIR}/ctags
 XSTR=	${BINDIR}/xstr
-DEBUGFLAGS=	-g -Wall -Wextra
+DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
+	-Wall -Wextra \
+	-fsanitize=undefined \
+	-fsanitize=integer \
+	-fsanitize=address
 NONDEBUGFLAGS=	
-CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
+_CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
 	${DEBUGFLAGS}
 TERMLIB=	-ltinfo
 MKSTR=	${BINDIR}/mkstr
@@ -50,10 +54,10 @@ OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 all:	a.out #exrecover expreserve tags
 
 .c.o:
-	${CC} ${CFLAGS} -c $<
+	${CC} ${_CFLAGS} -c $<
 
 a.out: ${OBJS}
-	${CC} ${OBJS} ${TERMLIB}
+	${CC} ${_CFLAGS} ${OBJS} ${TERMLIB}
 
 tags:
 	${CTAGS} -w *.h *.c
@@ -61,7 +65,7 @@ tags:
 ${OBJS}: ex_vars.h ex.h makefile ex_tune.h
 
 #ex_vars.h:
-#	csh makeoptions ${CFLAGS}
+#	csh makeoptions ${_CFLAGS}
 
 strings.o: strings
 	${XSTR}
@@ -71,16 +75,10 @@ strings.o: strings
 	rm xs.s
 	
 exrecover: exrecover.o
-	${CC} ${CFLAGS} exrecover.o -o exrecover
-
-exrecover.o: exrecover.c
-	${CC} ${CFLAGS} -c -O exrecover.c
+	${CC} ${_CFLAGS} exrecover.o -o exrecover
 
 expreserve: expreserve.o
-	${CC} expreserve.o -o expreserve
-
-expreserve.o:
-	${CC} ${CFLAGS} -c -O expreserve.c
+	${CC} ${_CFLAGS} expreserve.o -o expreserve
 
 clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h

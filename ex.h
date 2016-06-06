@@ -85,7 +85,7 @@ struct	option {
 #define	value(a)	options[a].ovalue
 #define	svalue(a)	options[a].osvalue
 
-struct	option options[NOPTS + 1];
+extern struct	option options[NOPTS + 1];
 
 
 /*
@@ -145,7 +145,7 @@ short	defwind;		/* -w# change default window size */
 int	dirtcnt;		/* When >= MAXDIRT, should sync temporary */
 bool	edited;			/* Current file is [Edited] */
 line	*endcore;		/* Last available core location */
-bool	endline;		/* Last cmd mode command ended with \n */
+extern bool	endline;		/* Last cmd mode command ended with \n */
 #ifndef VMUNIX
 short	erfile;			/* Error message file unit */
 #endif
@@ -161,7 +161,7 @@ bool	inopen;			/* Inside open or visual */
 char	*input;			/* Current position in cmd line input buffer */
 bool	intty;			/* Input is a tty */
 short	io;			/* General i/o unit (auto-closed on error!) */
-short	lastc;			/* Last character ret'd from cmd input */
+extern short	lastc;			/* Last character ret'd from cmd input */
 bool	laste;			/* Last command was an "e" (or "rec") */
 char	lastmac;		/* Last macro called for ** */
 char	lasttag[TAGSIZE];	/* Last argument to a tag command */
@@ -187,7 +187,7 @@ bool	ruptible;		/* Interruptible is normal state */
 bool	shudclob;		/* Have a prompt to clobber (e.g. on ^D) */
 int	status;			/* Status returned from wait() */
 int	tchng;			/* If nonzero, then [Modified] */
-short	tfile;			/* Temporary file unit */
+extern short	tfile;			/* Temporary file unit */
 bool	vcatch;			/* Want to catch an error (open/visual) */
 jmp_buf	vreslab;		/* For error throws to a visual catch */
 int	xchng;			/* Suppresses multiple "No writes" in !cmd */
@@ -218,9 +218,9 @@ int	xchng;			/* Suppresses multiple "No writes" in !cmd */
  * Environment like memory
  */
 char	altfile[FNSIZE];	/* Alternate file name */
-char	direct[32];		/* Temp file goes here */
-char	shell[32];		/* Copied to be settable */
-char	ttytype[16];		/* A long and pretty name */
+extern char	direct[32];		/* Temp file goes here */
+extern char	shell[32];		/* Copied to be settable */
+extern char	ttytype[16];		/* A long and pretty name */
 char	uxb[UXBSIZE + 2];	/* Last !command for !! */
 
 /*
@@ -279,9 +279,9 @@ line	*undadot;		/* If we saved all lines, dot reverts here */
 #define	NOSTR	(char *) 0
 #define	NOLINE	(line *) 0
 
-int	(*Outchar)();
-int	(*Pline)();
-int	(*Putchar)();
+extern int	(*Outchar)();
+extern int	(*Pline)();
+extern int	(*Putchar)();
 int	(*oldhup)();
 int	(*setlist())();
 int	(*setnorm())();
