@@ -124,7 +124,7 @@ error0(void)
 	resetflav();
 	if (laste) {
 		laste = 0;
-		sync();
+		ex_sync();
 	}
 	if (!SO || !SE)
 		dingdong();

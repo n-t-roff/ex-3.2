@@ -249,7 +249,7 @@ doecmd:
 			init();
 			addr2 = zero;
 			laste++;
-			sync();
+			ex_sync();
 			rop(c);
 			nochng();
 			continue;
@@ -471,7 +471,7 @@ quit:
 					init();
 					addr2 = zero;
 					laste++;
-					sync();
+					ex_sync();
 					recover();
 					rop2();
 					revocer();

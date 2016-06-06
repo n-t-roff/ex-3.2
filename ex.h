@@ -40,6 +40,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <unistd.h>
 #include <sys/types.h>
 #include <ctype.h>
 #include <errno.h>
@@ -218,9 +219,9 @@ int	xchng;			/* Suppresses multiple "No writes" in !cmd */
  * Environment like memory
  */
 char	altfile[FNSIZE];	/* Alternate file name */
-extern char	direct[32];		/* Temp file goes here */
-extern char	shell[32];		/* Copied to be settable */
-extern char	ttytype[16];		/* A long and pretty name */
+extern char	direct[ONMSZ];		/* Temp file goes here */
+extern char	shell[ONMSZ];		/* Copied to be settable */
+extern char	ttytype[ONMSZ];		/* A long and pretty name */
 char	uxb[UXBSIZE + 2];	/* Last !command for !! */
 
 /*
@@ -316,7 +317,6 @@ void	put(void);
 int	putreg();
 int	YANKreg();
 int	delete();
-int	execl();
 int	filter();
 int	getfile();
 int	getsub();

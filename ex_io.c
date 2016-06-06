@@ -397,7 +397,7 @@ other:
 	}
 	if (laste) {
 		laste = 0;
-		sync();
+		ex_sync();
 	}
 }
 
@@ -512,7 +512,7 @@ cre:
 	if (c != 2 && addr1 == one && addr2 == dol) {
 		if (eq(file, savedfile))
 			edited = 1;
-		sync();
+		ex_sync();
 	}
 	if (!dofname) {
 		addr1 = saddr1;

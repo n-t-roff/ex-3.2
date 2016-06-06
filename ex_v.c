@@ -212,7 +212,7 @@ fixzero()
 
 		vdoappend("");
 		if (!ochng)
-			sync();
+			ex_sync();
 		addr1 = addr2 = one;
 	} else if (addr2 == zero)
 		addr2 = one;
