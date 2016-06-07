@@ -9,13 +9,12 @@
  * Only exstrings is looked at "+4", i.e. if you give
  * "/usr/lib/..." here, "/lib" will be tried only for strings.
  */
-#define libpath(a)	"/usr/local/bin/" a
-#define	EXRECOVER	libpath("ex3.2recover")
-#define	EXPRESERVE	libpath("ex3.2preserve")
+#define	EXRECOVER	LIBDIR "/ex3.2recover"
+#define	EXPRESERVE	LIBDIR "/ex3.2preserve"
 #ifndef VMUNIX
 #define	EXSTRINGS	libpath(ex3.2strings)
 #endif
-#define	MASTERTAGS	libpath("tags")
+#define	MASTERTAGS	LIBDIR "/tags"
 
 /*
  * If your system believes that tabs expand to a width other than
@@ -91,8 +90,8 @@
 #define	TUBECOLS	160	/* Number of screen columns for visual */
 #define	TUBESIZE	3400	/* Maximum screen size for visual */
 #else
-#define	TUBELINES	100
-#define	TUBECOLS	300
+#define	TUBELINES	150
+#define	TUBECOLS	400
 #define	TUBESIZE	(TUBELINES * TUBECOLS)
 #endif
 

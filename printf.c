@@ -19,7 +19,7 @@ static int width, sign, fill;
 char *_p_dconv();
 
 void
-printf(const char *fmt, ...)
+ex_printf(const char *fmt, ...)
 {
 	va_list ap;
 	char fcode;

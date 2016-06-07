@@ -26,38 +26,33 @@ VERSION=3.2
 # doesn't matter much. Another method, which works on v7 pdp-11's,
 # is to use pcc for ex_io.c instead of cc.
 #
-BINDIR=	/usr/ucb
-NBINDIR=/usr/new
-LIBDIR=	/usr/lib
-FOLD=	${BINDIR}/fold
+PREFIX=	${DESTDIR}/usr/local
+BINDIR=	${PREFIX}/bin
+LIBDIR=	${PREFIX}/libexec
+#
+# Either none or both of the next two lines needs to be uncommented
+#
+D_SBRK=	-DUNIX_SBRK
+MALLOC_O=mapmalloc.o
 CTAGS=	${BINDIR}/ctags
-XSTR=	${BINDIR}/xstr
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
 	-fsanitize=undefined \
-	-fsanitize=integer \
-	-fsanitize=address
+	-fsanitize=integer
+#	-fsanitize=address
 NONDEBUGFLAGS=	
 _CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
-	${DEBUGFLAGS}
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' \
+	${NONDEBUGFLAGS}
+_LDFLAGS=-s
 TERMLIB=	-ltinfo
-MKSTR=	${BINDIR}/mkstr
-CXREF=	${BINDIR}/cxref
-INCLUDE=/usr/include
-PR=	pr
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
 	ex_vops.o ex_vops2.o ex_vops3.o ex_vput.o ex_vwind.o \
-	printf.o
+	printf.o ${MALLOC_O}
 
-all:	a.out #exrecover expreserve tags
-
-.c.o:
-	${CC} ${_CFLAGS} -c $<
-
-a.out: ${OBJS}
-	${CC} ${_CFLAGS} ${OBJS} ${TERMLIB}
+all:	a.out exrecover expreserve #tags
 
 tags:
 	${CTAGS} -w *.h *.c
@@ -67,65 +62,49 @@ ${OBJS}: ex_vars.h ex.h makefile ex_tune.h
 #ex_vars.h:
 #	csh makeoptions ${_CFLAGS}
 
-strings.o: strings
-	${XSTR}
-	${CC} -c -S xs.c
-	ed - <:rofix xs.s
-	as -o strings.o xs.s
-	rm xs.s
-	
+a.out: ${OBJS}
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
+
 exrecover: exrecover.o
-	${CC} ${_CFLAGS} exrecover.o -o exrecover
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} exrecover.o \
+	    -o exrecover
 
 expreserve: expreserve.o
-	${CC} ${_CFLAGS} expreserve.o -o expreserve
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} expreserve.o \
+	    -o expreserve
+
+.c.o:
+	${CC} ${CFLAGS} ${_CFLAGS} -c $<
 
 clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h
 	-rm -f a.out exrecover expreserve ex${VERSION}strings strings core trace tags
 	-rm -f *.o x*.[cs]
 
-ninstall: a.out
-	-rm -f ${NBINDIR}/ex ${NBINDIR}/vi
-	cp a.out ${NBINDIR}/ex
-#	-cp ex${VERSION}strings ${LIBDIR}/ex${VERSION}strings
-	ln ${NBINDIR}/ex ${NBINDIR}/vi
-	chmod 1755 ${NBINDIR}/ex
+distclean: clean
+	rm -rf Makefile config.log
 
-install: a.out exrecover expreserve
-	-rm -f ${DESTDIR}${BINDIR}/ex
-	-rm -f ${DESTDIR}${BINDIR}/vi
-	-rm -f ${DESTDIR}${BINDIR}/edit
-	-rm -f ${DESTDIR}${BINDIR}/e
-	-rm -f ${DESTDIR}/usr/bin/ex
-	cp a.out ${DESTDIR}${BINDIR}/ex
-#	cp ex${VERSION}strings ${DESTDIR}/${LIBDIR}/ex${VERSION}strings
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/edit
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/e
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}${BINDIR}/vi
-	ln ${DESTDIR}${BINDIR}/ex ${DESTDIR}/usr/bin/ex
-	chmod 1755 ${DESTDIR}${BINDIR}/ex
-	cp exrecover ${DESTDIR}${LIBDIR}/ex${VERSION}recover
-	cp expreserve ${DESTDIR}/${LIBDIR}/ex${VERSION}preserve
-	chmod 4755 ${DESTDIR}${LIBDIR}/ex${VERSION}recover ${DESTDIR}${LIBDIR}/ex${VERSION}preserve
-	mkdir ${DESTDIR}/usr/preserve
+install: ${BINDIR} ${LIBDIR}
+	install a.out ${BINDIR}/ex
+	for i in vi view edit; do \
+		ln -sf ${BINDIR}/ex ${BINDIR}/$$i; \
+	done
+	for i in recover preserve; do \
+		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
+	done
+
+uninstall:
+	for i in ex vi view edit; do \
+		rm -f ${BINDIR}/$$i; \
+	done
+	for i in recover preserve; do \
+		rm -f ${LIBDIR}/ex${VERSION}$$i; \
+	done
+
+${BINDIR} ${LIBDIR}:
+	mkdir -p $@
 
 lint:
 	lint ex.c ex_?*.c
 	lint -u exrecover.c
 	lint expreserve.c
-
-print:
-	@${PR} READ* BUGS
-	@${PR} makefile*
-	@${PR} /etc/termcap
-	@(size -l a.out ; size *.o) | ${PR} -h sizes
-	@${PR} -h errno.h ${INCLUDE}/errno.h
-	@${PR} -h setjmp.h ${INCLUDE}/setjmp.h
-	@${PR} -h sgtty.h ${INCLUDE}/sgtty.h
-	@${PR} -h signal.h ${INCLUDE}/signal.h
-	@${PR} -h sys/stat.h ${INCLUDE}/sys/stat.h
-	@${PR} -h sys/types.h ${INCLUDE}/sys/types.h
-	@ls -ls | ${PR}
-	@${CXREF} *.c | ${PR} -h XREF
-	@${PR} *.h *.c

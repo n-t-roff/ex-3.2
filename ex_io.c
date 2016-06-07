@@ -85,17 +85,17 @@ filename(int comm)
 		lprintf("\"%s\"", file);
 		if (comm == 'f') {
 			if (!edited)
-				printf(" [Not edited]");
+				ex_printf(" [Not edited]");
 			if (tchng)
-				printf(" [Modified]");
+				ex_printf(" [Modified]");
 		}
 		flush();
 	} else
-		printf("No file ");
+		ex_printf("No file ");
 	if (comm == 'f') {
 		if (!(i = lineDOL()))
 			i++;
-		printf(" line %d of %d --%ld%%--", lineDOT(), lineDOL(),
+		ex_printf(" line %d of %d --%ld%%--", lineDOT(), lineDOL(),
 		    (long) 100 * lineDOT() / i);
 	}
 }
@@ -492,9 +492,9 @@ cre:
 			syserror();
 		if (hush == 0)
 			if (nonexist)
-				printf(" [New file]");
+				ex_printf(" [New file]");
 			else if (value(WRITEANY) && edfile() != EDF)
-				printf(" [Existing file]");
+				ex_printf(" [Existing file]");
 		break;
 
 	case 2:
@@ -615,7 +615,7 @@ uexp:
 	if (warn && hush == 0 && chng && xchng != chng && value(WARN) && dol > zero) {
 		xchng = chng;
 		vnfl();
-		printf(mesg("[No write]|[No write since last change]"));
+		ex_printf(mesg("[No write]|[No write since last change]"));
 		noonl();
 		flush();
 	} else
@@ -703,7 +703,7 @@ unixex(char *opt, char *up, int newstdin, int mode)
 		if (ruptible)
 			signal(SIGINT, SIG_DFL);
 		execl(svalue(SHELL), "sh", opt, up, (char *) 0);
-		printf("No %s!\n", svalue(SHELL));
+		ex_printf("No %s!\n", svalue(SHELL));
 		error(NOSTR);
 	}
 	if (mode & 1) {
@@ -729,7 +729,7 @@ unixwt(bool c, struct termios f)
 		setty(f);
 	setrupt();
 	if (!inopen && c && hush == 0) {
-		printf("!\n");
+		ex_printf("!\n");
 		flush();
 		termreset();
 		gettmode();
@@ -861,7 +861,7 @@ getfile()
 			ninbuf = read(io, genbuf, LBSIZE) - 1;
 			if (ninbuf < 0) {
 				if (lp != linebuf) {
-					printf(" [Incomplete last line]");
+					ex_printf(" [Incomplete last line]");
 					break;
 				}
 				return (EOF);
@@ -909,7 +909,7 @@ putfile(void)
 	nib = BUFSIZ;
 	fp = genbuf;
 	do {
-		getline(*a1++);
+		ex_getline(*a1++);
 		lp = linebuf;
 		for (;;) {
 			if (--nib < 0) {
@@ -1024,19 +1024,19 @@ iostats()
 	io = -1;
 	if (hush == 0) {
 		if (value(TERSE))
-			printf(" %d/%D", cntln, cntch);
+			ex_printf(" %d/%D", cntln, cntch);
 		else
-			printf(" %d line%s, %D character%s", cntln, plural((long) cntln),
+			ex_printf(" %d line%s, %D character%s", cntln, plural((long) cntln),
 			    cntch, plural(cntch));
 		if (cntnull || cntodd) {
-			printf(" (");
+			ex_printf(" (");
 			if (cntnull) {
-				printf("%D null", cntnull);
+				ex_printf("%D null", cntnull);
 				if (cntodd)
-					printf(", ");
+					ex_printf(", ");
 			}
 			if (cntodd)
-				printf("%D non-ASCII", cntodd);
+				ex_printf("%D non-ASCII", cntodd);
 			putchar(')');
 		}
 		noonl();

@@ -5,8 +5,8 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-bool	pflag, nflag;
-int	poffset;
+extern bool	pflag, nflag;
+extern int	poffset;
 
 static void error0(void);
 static void setflav(void);
@@ -88,7 +88,7 @@ erewind()
 	argv = argv0;
 	args = args0;
 	if (argc > 1 && !hush) {
-		printf(mesg("%d files@to edit"), argc);
+		ex_printf(mesg("%d files@to edit"), argc);
 		if (inopen)
 			putchar(' ');
 		else

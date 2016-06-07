@@ -8,8 +8,8 @@
  * and mostly, insert mode (and a subroutine
  * to read an input line, including in the echo area.)
  */
-char	*vUA1, *vUA2;
-char	*vUD1, *vUD2;
+extern char	*vUA1, *vUA2;
+extern char	*vUD1, *vUD2;
 
 /*
  * Obleeperate characters in hardcopy
@@ -257,7 +257,7 @@ vappend(int ch, int cnt, int indent)
 
 				Outchar = vinschar;
 				hold |= HOLDQIK;
-				printf("%s", genbuf);
+				ex_printf("%s", genbuf);
 				hold = oldhold;
 				Outchar = vputchar;
 			}

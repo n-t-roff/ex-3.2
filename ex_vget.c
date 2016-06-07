@@ -322,11 +322,11 @@ noteit(must)
 	if (WBOT == WECHO)
 		vmoveitup(1, 1);
 	vigoto(WECHO, 0);
-	printf("%d %sline", notecnt, notesgn);
+	ex_printf("%d %sline", notecnt, notesgn);
 	if (notecnt > 1)
 		putchar('s');
 	if (*notenam) {
-		printf(" %s", notenam);
+		ex_printf(" %s", notenam);
 		if (*(strend(notenam) - 1) != 'e')
 			putchar('e');
 		putchar('d');

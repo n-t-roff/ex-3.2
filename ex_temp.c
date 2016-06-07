@@ -85,7 +85,7 @@ cleanup(all)
 	}
 }
 
-getline(tl)
+ex_getline(tl)
 	line tl;
 {
 	register char *bp, *lp;
@@ -319,7 +319,7 @@ REGblk()
 				j++, m >>= 1;
 			rused[i] |= (1 << j);
 #ifdef RDEBUG
-			printf("allocating block %d\n", i * 16 + j);
+			ex_printf("allocating block %d\n", i * 16 + j);
 #endif
 			return (i * 16 + j);
 		}
@@ -353,7 +353,7 @@ KILLreg(c)
 	sp->rg_flags = sp->rg_nleft = 0;
 	while (rblock != 0) {
 #ifdef RDEBUG
-		printf("freeing block %d\n", rblock);
+		ex_printf("freeing block %d\n", rblock);
 #endif
 		rused[rblock / 16] &= ~(1 << (rblock % 16));
 		regio(rblock, shread);
@@ -476,7 +476,7 @@ YANKreg(c)
 		rnleft = 0;
 	}
 	for (addr = addr1; addr <= addr2; addr++) {
-		getline(*addr);
+		ex_getline(*addr);
 		if (sp->rg_flags) {
 			if (addr == addr2)
 				*wcursor = 0;

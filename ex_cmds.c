@@ -598,7 +598,10 @@ quit:
 				tail("version");
 				setNAEOL();
 				/* should use SCCS subst here */
-				printf("Version 3.2, January 4, 1980");
+				ex_printf("Version 3.2, January 4, 1980"
+				    " (3BSD).  git "
+				    "160607 17:20"
+				    );
 				noonl();
 				continue;
 
@@ -694,7 +697,7 @@ caseline:
 			nonzero();
 			if (seensemi)
 				addr1 = addr2;
-			getline(*addr1);
+			ex_getline(*addr1);
 			if (c == CTRL('k')) {
 				flush1();
 				destline--;
@@ -716,7 +719,7 @@ numberit:
 		case '=':
 			newline();
 			setall();
-			printf("%d", lineno(addr2));
+			ex_printf("%d", lineno(addr2));
 			noonl();
 			continue;
 

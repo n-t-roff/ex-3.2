@@ -183,16 +183,16 @@ propt(op)
 	switch (op->otype) {
 
 	case ONOFF:
-		printf("%s%s", op->ovalue ? "" : "no", name);
+		ex_printf("%s%s", op->ovalue ? "" : "no", name);
 		break;
 
 	case NUMERIC:
-		printf("%s=%d", name, op->ovalue);
+		ex_printf("%s=%d", name, op->ovalue);
 		break;
 
 	case STRING:
 	case OTERM:
-		printf("%s=%s", name, op->osvalue);
+		ex_printf("%s=%s", name, op->osvalue);
 		break;
 	}
 }

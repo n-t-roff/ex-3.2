@@ -93,10 +93,10 @@ pargs()
 		if (ac != 0)
 			putchar(' ');
 		if (ac + argc == argc0 - 1)
-			printf("[");
+			ex_printf("[");
 		lprintf("%s", as);
 		if (ac + argc == argc0 - 1)
-			printf("]");
+			ex_printf("]");
 		as = av ? *++av : strend(as) + 1;
 	}
 	noonl();
@@ -202,7 +202,7 @@ join(c)
 	cp = genbuf;
 	*cp = 0;
 	for (a1 = addr1; a1 <= addr2; a1++) {
-		getline(*a1);
+		ex_getline(*a1);
 		cp1 = linebuf;
 		if (a1 != addr1 && c == 0) {
 			while (*cp1 == ' ' || *cp1 == '\t')
@@ -317,7 +317,7 @@ getcopy()
 
 	if (tad1 > addr2)
 		return (EOF);
-	getline(*tad1++);
+	ex_getline(*tad1++);
 	return (0);
 }
 
@@ -329,7 +329,7 @@ getput()
 
 	if (tad1 > unddol)
 		return (EOF);
-	getline(*tad1++);
+	ex_getline(*tad1++);
 	tad1++;
 	return (0);
 }
@@ -372,12 +372,12 @@ pragged(kill)
 	if (!kill)
 		getDOT();
 	strcpy(genbuf, linebuf);
-	getline(*unddol);
+	ex_getline(*unddol);
 	if (kill)
 		*pkill[1] = 0;
 	strcat(linebuf, gp);
 	putmark(unddol);
-	getline(dol[1]);
+	ex_getline(dol[1]);
 	if (kill)
 		strcLIN(pkill[0]);
 	strcpy(gp, linebuf);
@@ -712,7 +712,7 @@ zop2(int lines, int op)
 	if (addr1 > addr2)
 		return;
 	if (op == EOF && zhadpr) {
-		getline(*addr1);
+		ex_getline(*addr1);
 		putchar('\r' | QUOTE);
 		shudclob = 1;
 	} else if (znoclear == 0 && CL != NOSTR && !inopen) {
@@ -750,7 +750,7 @@ plines(adr1, adr2, movedot)
 
 	pofix();
 	for (addr = adr1; addr <= adr2; addr++) {
-		getline(*addr);
+		ex_getline(*addr);
 		pline(lineno(addr));
 		if (inopen)
 			putchar('\n' | QUOTE);

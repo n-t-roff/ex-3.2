@@ -40,6 +40,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <ctype.h>
@@ -115,7 +116,6 @@ extern struct	option options[NOPTS + 1];
 #else
 #	define	BUFSIZ	512
 #endif
-#	define	NULL	0
 #	define	EOF	-1
 #endif
 
@@ -129,7 +129,9 @@ extern struct	option options[NOPTS + 1];
  */
 #define	QUOTE	0200
 #define	TRIM	0177
+#ifndef CTRL
 #define	CTRL(c)	(c & 037)
+#endif
 #define	NL	CTRL('j')
 #define	CR	CTRL('m')
 #define	DELETE	0177		/* See also ATTN, QUIT in ex_tune.h */
@@ -245,7 +247,6 @@ line	*one;			/* First line */
 line	*truedol;		/* End of all lines, including saves */
 line	*unddol;		/* End of undo saved lines */
 line	*zero;			/* Points to empty slot before one */
-int	linelimit;
 
 /*
  * Undo information
@@ -400,7 +401,7 @@ void	vclreol(void);
 void	vshow(line *, line *);
 void	vdown(int, int, bool);
 void	vup(int, int, bool);
-void	printf(const char *, ...);
+void	ex_printf(const char *, ...);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

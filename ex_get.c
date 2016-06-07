@@ -130,7 +130,7 @@ gettty()
 	if (intty && !inglobal) {
 		if (offset) {
 			holdcm = 1;
-			printf("  %4d  ", lineDOT() + 1);
+			ex_printf("  %4d  ", lineDOT() + 1);
 			flush();
 			holdcm = 0;
 		}
@@ -266,5 +266,5 @@ setin(addr)
 	if (addr == zero)
 		lastin = 0;
 	else
-		getline(*addr), lastin = smunch(0, linebuf);
+		ex_getline(*addr), lastin = smunch(0, linebuf);
 }

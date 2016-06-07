@@ -150,9 +150,9 @@ main(ac, av)
 	fendcore = (line *) sbrk(0);
 	endcore = fendcore - 2;
 #else
-	linelimit = 0x4000;
-	fendcore = malloc(linelimit * sizeof(line *));
-	endcore = fendcore + linelimit - 1;
+# define LINELIMIT 0x8000
+	fendcore = malloc(LINELIMIT * sizeof(line *));
+	endcore = fendcore + LINELIMIT - 1;
 #endif
 
 	/*
@@ -181,7 +181,7 @@ main(ac, av)
 			}
 			trace = fopen(tracef, "w");
 			if (trace == NULL)
-				printf("Trace create error\n");
+				ex_printf("Trace create error\n");
 			setbuf(trace, tracbuf);
 			break;
 

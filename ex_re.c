@@ -457,9 +457,9 @@ snote(int total, int lines)
 
 	if (!notable(total))
 		return;
-	printf(mesg("%d subs|%d substitutions"), total);
+	ex_printf(mesg("%d subs|%d substitutions"), total);
 	if (lines != 1 && lines != total)
-		printf(" on %d lines", lines);
+		ex_printf(" on %d lines", lines);
 	noonl();
 	flush();
 }
@@ -710,7 +710,7 @@ execute(gf, addr)
 		if (addr == zero)
 			return (0);
 		p1 = linebuf;
-		getline(*addr);
+		ex_getline(*addr);
 		locs = 0;
 	}
 	p2 = expbuf;

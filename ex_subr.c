@@ -147,7 +147,7 @@ genindent(indent)
 getDOT()
 {
 
-	getline(*dot);
+	ex_getline(*dot);
 }
 
 line *
@@ -227,9 +227,9 @@ killcnt(int cnt)
 	}
 	if (!notable(cnt))
 		return;
-	printf("%d lines", cnt);
+	ex_printf("%d lines", cnt);
 	if (value(TERSE) == 0) {
-		printf(" %c%s", Command[0] | ' ', Command + 1);
+		ex_printf(" %c%s", Command[0] | ' ', Command + 1);
 		if (Command[strlen(Command) - 1] != 'e')
 			putchar('e');
 		putchar('d');
@@ -336,7 +336,7 @@ imerror(char *seekpt, int i)
 		vclreol();
 	if (SO && SE)
 		putpad(SO);
-	printf(mesg(cp), i);
+	ex_printf(mesg(cp), i);
 	if (SO && SE)
 		putpad(SE);
 }
@@ -423,7 +423,7 @@ netchange(int i)
 	}
 	if (!notable(i))
 		return;
-	printf(mesg("%d %slines@in file after %s"), i, cp, Command);
+	ex_printf(mesg("%d %slines@in file after %s"), i, cp, Command);
 	putNFL();
 }
 
