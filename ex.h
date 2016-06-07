@@ -72,9 +72,9 @@ typedef	short	bool;
 struct	option {
 	char	*oname;
 	char	*oabbrev;
-	short	otype;		/* Types -- see below */
-	short	odefault;	/* Default value */
-	short	ovalue;		/* Current value */
+	int	otype;		/* Types -- see below */
+	int	odefault;	/* Default value */
+	int	ovalue;		/* Current value */
 	char	*osvalue;
 };
 
