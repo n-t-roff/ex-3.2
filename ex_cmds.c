@@ -408,7 +408,7 @@ casek:
 			pflag = 0;
 print:
 			nonzero();
-			if (CL && span() > LINES) {
+			if (CL && span() > EX_LINES) {
 				flush1();
 				vclear();
 			}
@@ -600,7 +600,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 3.2, January 4, 1980"
 				    " (3BSD).  git "
-				    "160607 17:20"
+				    "160607 18:11"
 				    );
 				noonl();
 				continue;

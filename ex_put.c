@@ -354,22 +354,22 @@ fgoto()
 			}
 			outcol = 0;
 		}
-		if (outline > LINES - 1) {
-			destline -= outline - (LINES - 1);
-			outline = LINES - 1;
+		if (outline > EX_LINES - 1) {
+			destline -= outline - (EX_LINES - 1);
+			outline = EX_LINES - 1;
 		}
 	}
-	if (destline > LINES - 1) {
+	if (destline > EX_LINES - 1) {
 		l = destline;
-		destline = LINES - 1;
-		if (outline < LINES - 1) {
+		destline = EX_LINES - 1;
+		if (outline < EX_LINES - 1) {
 			c = destcol;
 			if (pfast == 0 && (!CA || holdcm))
 				destcol = 0;
 			fgoto();
 			destcol = c;
 		}
-		while (l > LINES - 1) {
+		while (l > EX_LINES - 1) {
 			putch('\n');
 			l--;
 			if (pfast == 0)
@@ -451,11 +451,11 @@ plod(cnt)
 			tputs(HO, 0, plodput);
 			outcol = outline = 0;
 		} else if (LL) {
-			k = (LINES - 1) - destline;
+			k = (EX_LINES - 1) - destline;
 			if (i + k + 2 < j) {
 				tputs(LL, 0, plodput);
 				outcol = 0;
-				outline = LINES - 1;
+				outline = EX_LINES - 1;
 			}
 		}
 	}
@@ -584,8 +584,8 @@ noteinp()
 {
 
 	outline++;
-	if (outline > LINES - 1)
-		outline = LINES - 1;
+	if (outline > EX_LINES - 1)
+		outline = EX_LINES - 1;
 	destline = outline;
 	destcol = outcol = 0;
 }
@@ -605,7 +605,7 @@ termreset()
 	if (TI)	/* otherwise it flushes anyway, and 'set tty=dumb' vomits */
 		putpad(TI);	 /*adb change -- emit terminal initial sequence */
 	destcol = 0;
-	destline = LINES - 1;
+	destline = EX_LINES - 1;
 	if (CA) {
 		outcol = UKCOL;
 		outline = UKCOL;
@@ -782,16 +782,43 @@ ostart(void)
 	tty.c_lflag &= ~(ECHO|ICANON);
 	tty.c_oflag &= ~(
 #ifdef TAB3
-	TAB3|
+	    TAB3|
 #endif
-	ONLCR);
+	    ONLCR);
 	tty.c_cc[VMIN] = 1;
 	tty.c_cc[VTIME] = 1;
+	ttcharoff();
 	sTTY(1);
 	putpad(VS);
 	putpad(KS);
 	pfast |= 2;
 	return (f);
+}
+
+ttcharoff()
+{
+	long vdisable;
+
+	if ((vdisable = fpathconf(STDIN_FILENO, _PC_VDISABLE)) == -1)
+		vdisable = '\377';
+	tty.c_cc[VQUIT] = vdisable;
+#ifdef VSUSP
+	tty.c_cc[VSUSP] = vdisable;
+#endif
+#ifdef VDSUSP
+	tty.c_cc[VDSUSP] = vdisable;
+#endif
+#ifdef VSTART
+	/*
+	 * The following is sample code if USG ever lets people change
+	 * their start/stop chars.  As long as they can't we can't get
+	 * into trouble so we just leave them alone.
+	 */
+	if (tty.c_cc[VSTART] != CTRL('q'))
+		tty.c_cc[VSTART] = vdisable;
+	if (tty.c_cc[VSTOP] != CTRL('s'))
+		tty.c_cc[VSTOP] = vdisable;
+#endif
 }
 
 /*
@@ -851,6 +878,8 @@ setty(struct termios f)
 {
 	struct termios ot = tty;
 
+	if (tty.c_lflag & ICANON)
+		ttcharoff();
 	tty = f;
 	sTTY(1);
 	return (ot);

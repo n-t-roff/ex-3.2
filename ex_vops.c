@@ -640,7 +640,7 @@ vfilter(void)
 		vgoto(WECHO, 0); flusho();
 		vremote(cnt, filter, 2);
 	ONERR
-		vdirty(0, LINES);
+		vdirty(0, EX_LINES);
 	ENDCATCH
 	if (dot == zero && dol > zero)
 		dot = one;

@@ -56,10 +56,10 @@ setterm(type)
 		unknown++;
 		CP(genbuf, "xx|dumb:");
 	}
-	i = LINES = tgetnum("li");
-	if (LINES <= 5)
-		LINES = 24;
-	l = LINES;
+	i = EX_LINES = tgetnum("li");
+	if (EX_LINES <= 5)
+		EX_LINES = 24;
+	l = EX_LINES;
 	if (ex_ospeed < B1200)
 		l /= 2;
 	else if (ex_ospeed < B2400)
@@ -89,7 +89,7 @@ setterm(type)
 	aoftspace = tspace;
 	CP(ttytype, longname(genbuf, type));
 	if (i <= 0)
-		LINES = 2;
+		EX_LINES = 2;
 	/* proper strings to change tty type */
 #ifdef notdef
 	/* Taken out because we don't allow it. See ex_set.c for reasons. */
