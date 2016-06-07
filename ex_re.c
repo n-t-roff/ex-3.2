@@ -72,7 +72,7 @@ global(k)
 brkwh:
 	ungetchar(c);
 out:
-	newline();
+	ex_newline();
 	*gp++ = c;
 	*gp++ = 0;
 	inglobal = 2;
@@ -207,7 +207,7 @@ compsub(ch)
 		default:
 			ungetchar(c);
 			setcount();
-			newline();
+			ex_newline();
 			if (uselastre)
 				savere(subre);
 			else

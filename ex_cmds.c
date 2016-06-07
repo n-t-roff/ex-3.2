@@ -152,7 +152,7 @@ choice:
 			tail("append");
 			setdot();
 			aiflag = exclam();
-			newline();
+			ex_newline();
 			deletenone();
 			setin(addr2);
 			ignore(append(gettty, addr2));
@@ -280,7 +280,7 @@ doecmd:
 			setdot();
 			nonzero();
 			aiflag = exclam();
-			newline();
+			ex_newline();
 			deletenone();
 			setin(addr2);
 			ignore(append(gettty, addr2 - 1));
@@ -295,7 +295,7 @@ doecmd:
 			c = exclam();
 			setcount();
 			nonzero();
-			newline();
+			ex_newline();
 			if (given < 2 && addr2 != dol)
 				addr2++;
 			join(c);
@@ -308,7 +308,7 @@ casek:
 			c = getchar();
 			if (endcmd(c))
 				serror("Mark what?|%s requires following letter", Command);
-			newline();
+			ex_newline();
 			if (!islower(c))
 				error("Bad mark|Mark must specify a letter");
 			setdot();
@@ -586,7 +586,7 @@ quit:
 			setnoaddr();
 			markDOT();
 			c = exclam();
-			newline();
+			ex_newline();
 			undo(c);
 			continue;
 
@@ -668,7 +668,7 @@ quit:
 				c = tolower(c);
 			if (!islower(c))
 				error("Bad register");
-			newline();
+			ex_newline();
 			setdot();
 			cmdmac(c);
 			continue;
@@ -717,7 +717,7 @@ numberit:
 
 /* = */
 		case '=':
-			newline();
+			ex_newline();
 			setall();
 			ex_printf("%d", lineno(addr2));
 			noonl();

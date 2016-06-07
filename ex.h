@@ -351,7 +351,7 @@ void	commands(bool, bool);
 void	vcontin(bool);
 void	resetflav(void);
 void	nomore(void);
-void	newline(void);
+void	ex_newline(void);
 void	mapcmd(int);
 void	zop2(int, int);
 void	tagfind(bool);
