@@ -600,7 +600,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 3.2, January 4, 1980"
 				    " (3BSD).  git "
-				    "160607 18:11"
+				    "160609 18:35"
 				    );
 				noonl();
 				continue;
@@ -789,6 +789,6 @@ numberit:
 			ungetchar(c);
 			tailprim("", 0, 0);
 		}
-		error("What?|Unknown command character '%c'", c);
+		ierror("What?|Unknown command character '%c'", c);
 	}
 }

@@ -34,6 +34,7 @@ LIBDIR=	${PREFIX}/libexec
 #
 D_SBRK=	-DUNIX_SBRK
 MALLOC_O=mapmalloc.o
+#
 CTAGS=	${BINDIR}/ctags
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
@@ -65,12 +66,10 @@ a.out: ${OBJS}
 	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 exrecover: exrecover.o
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} exrecover.o \
-	    -o exrecover
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
 
 expreserve: expreserve.o
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} expreserve.o \
-	    -o expreserve
+	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
 
 .c.o:
 	${CC} ${CFLAGS} ${_CFLAGS} -c $<

@@ -444,15 +444,6 @@ preserve()
 	return (0);
 }
 
-#ifndef V6
-exit(i)
-	int i;
-{
-
-	_exit(i);
-}
-#endif
-
 /*
  * Return last component of unix path name p.
  */

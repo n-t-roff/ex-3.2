@@ -52,7 +52,7 @@
 oop()
 {
 	register char *ic;
-	char atube[TUBESIZE + LBSIZE];
+	static char atube[TUBESIZE + LBSIZE];
 	struct termios f;
 
 	ovbeg();
@@ -152,7 +152,7 @@ void
 vop(void)
 {
 	register int c;
-	char atube[TUBESIZE + LBSIZE];
+	static char atube[TUBESIZE + LBSIZE];
 	struct termios f;
 
 	if (!CA && UP == NOSTR) {

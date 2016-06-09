@@ -66,11 +66,11 @@
 bool	hitin2;			/* Last read hit was ibuff2 not ibuff */
 bool	ichang2;		/* Have actually changed ibuff2 */
 bool	ichanged;		/* Have actually changed ibuff */
-short	iblock;			/* Temp file block number of ibuff (or -1) */
-short	iblock2;		/* Temp file block number of ibuff2 (or -1) */
-short	ninbuf;			/* Number useful chars left in input buffer */
-short	nleft;			/* Number usable chars left in output buffer */
-short	oblock;			/* Temp file block number of obuff (or -1) */
+int	iblock;			/* Temp file block number of ibuff (or -1) */
+int	iblock2;		/* Temp file block number of ibuff2 (or -1) */
+int	ninbuf;			/* Number useful chars left in input buffer */
+int	nleft;			/* Number usable chars left in output buffer */
+int	oblock;			/* Temp file block number of obuff (or -1) */
 #ifndef VMUNIX
 short	tline;			/* Current temp file ptr */
 #else
@@ -98,7 +98,7 @@ char	obuff[BUFSIZ];
 /* This definition also appears in expreserve.c... beware */
 struct 	header {
 	time_t	Time;			/* Time temp file last updated */
-	short	Uid;
+	uid_t	Uid;
 #ifndef VMUNIX
 	short	Flines;			/* Number of lines in file */
 #else

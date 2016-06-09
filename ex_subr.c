@@ -666,7 +666,7 @@ syserror()
 	if (e >= 0 && errno <= std_nerrs)
 		error(std_errlist[e]);
 	else
-		error("System error %d", e);
+		ierror("System error %d", e);
 }
 
 char *

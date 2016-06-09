@@ -11,13 +11,13 @@
 #define	READ	0
 #define	WRITE	1
 
+static void rbflush(void);
+
 char	tfname[40];
 char	rfname[40];
 int	havetmp;
-short	tfile = -1;
-short	rfile = -1;
-
-static void rbflush(void);
+int	tfile = -1;
+int	rfile = -1;
 
 void
 fileinit(void)
@@ -185,7 +185,7 @@ blkio(b, buf, iofcn)
 	int (*iofcn)();
 {
 
-	lseek(tfile, (long) (unsigned) b * BUFSIZ, 0);
+	lseek(tfile, b * BUFSIZ, 0);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
 		filioerr(tfname);
 }
@@ -222,7 +222,7 @@ synctmp(void)
 			oblock = *bp + 1;
 			bp[1] = -1;
 		}
-		lseek(tfile, (long) (unsigned) *bp * BUFSIZ, 0);
+		lseek(tfile, *bp * BUFSIZ, 0);
 		cnt = ((dol - a) + 2) * sizeof (line);
 		if (cnt > BUFSIZ)
 			cnt = BUFSIZ;
@@ -299,7 +299,7 @@ oops:
 		if (rfile < 0)
 			goto oops;
 	}
-	lseek(rfile, (long) b * BUFSIZ, 0);
+	lseek(rfile, b * BUFSIZ, 0);
 	if ((*iofcn)(rfile, rbuf, BUFSIZ) != BUFSIZ)
 		goto oops;
 	rblock = b;
@@ -394,7 +394,7 @@ putreg(c)
 			vgoto(WECHO, 0);
 		}
 		vreg = -1;
-		error("Nothing in register %c", c);
+		ierror("Nothing in register %c", c);
 	}
 	if (inopen && partreg(c)) {
 		squish();
@@ -553,7 +553,7 @@ int buflen;
 	rnext = mapreg(c)->rg_first;
 	if (rnext==0) {
 		*buf = 0;
-		error("Nothing in register %c",c);
+		ierror("Nothing in register %c",c);
 	}
 	p = buf;
 	while (getREG()==0) {

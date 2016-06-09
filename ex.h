@@ -40,6 +40,7 @@
  * of additional terminal descriptions you add to the termcap data base.
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -49,6 +50,7 @@
 #include <setjmp.h>
 #include <sys/stat.h>
 #include <termios.h>
+#include <fcntl.h>
 
 extern	int errno;
 
@@ -189,7 +191,7 @@ bool	ruptible;		/* Interruptible is normal state */
 bool	shudclob;		/* Have a prompt to clobber (e.g. on ^D) */
 int	status;			/* Status returned from wait() */
 int	tchng;			/* If nonzero, then [Modified] */
-extern short	tfile;			/* Temporary file unit */
+extern int	tfile;			/* Temporary file unit */
 bool	vcatch;			/* Want to catch an error (open/visual) */
 jmp_buf	vreslab;		/* For error throws to a visual catch */
 int	xchng;			/* Suppresses multiple "No writes" in !cmd */
@@ -364,6 +366,9 @@ void	set(void);
 void	merror(char *);
 void	imerror(char *, int);
 void	smerror(char *, char *);
+void	error(char *);
+void	ierror(char *, int);
+void	serror(char *, char *);
 void	reverse(line *, line *);
 void	netchange(int);
 void	killcnt(int);
