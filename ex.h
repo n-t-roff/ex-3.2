@@ -325,7 +325,6 @@ int	getsub();
 int	gettty();
 int	join();
 int	listchar();
-off_t	lseek();
 int	normline();
 int	numbline();
 int	(*oldquit)();

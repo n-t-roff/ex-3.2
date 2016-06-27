@@ -296,7 +296,7 @@ rop(c)
 	struct stat stbuf;
 	short magic;
 
-	io = open(file, 0);
+	io = open(file, O_RDONLY);
 	if (io < 0) {
 		if (c == 'e' && errno == ENOENT)
 			edited++;
@@ -321,7 +321,7 @@ rop(c)
 
 	case S_IFREG:
 		i = read(io, (char *) &magic, sizeof(magic));
-		lseek(io, 0l, 0);
+		lseek(io, 0l, SEEK_SET);
 		if (i != sizeof(magic))
 			break;
 		switch (magic) {
@@ -468,7 +468,7 @@ bool dofname;	/* if 1 call filename, else use savedfile */
 				if (samei(&stbuf, "/dev/tty"))
 					break;
 			}
-			io = open(file, 1);
+			io = open(file, O_WRONLY);
 			if (io < 0)
 				syserror();
 			if (!isatty(io))
@@ -498,13 +498,13 @@ cre:
 		break;
 
 	case 2:
-		io = open(file, 1);
+		io = open(file, O_WRONLY);
 		if (io < 0) {
 			if (exclam || value(WRITEANY))
 				goto cre;
 			syserror();
 		}
-		lseek(io, 0l, 2);
+		lseek(io, 0l, SEEK_END);
 		break;
 	}
 	putfile();
@@ -965,7 +965,7 @@ source(char *fil, bool okfail)
 	if (saveinp < 0)
 		error("Too many nested sources");
 	close(0);
-	if (open(fil, 0) < 0) {
+	if (open(fil, O_RDONLY) < 0) {
 		oerrno = errno;
 		setrupt();
 		dup(saveinp);

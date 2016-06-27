@@ -50,6 +50,11 @@ Features which had been invented after version 3.2:
   put these lines to the end of the file
   and insert an empty line before them.
 * `ZZ`, `:x` and `:map!`
+* The documents
+  [viin.pdf](http://n-t-roff.github.io/ex/3.2/viin.pdf)
+  and
+  [exrm.pdf](http://n-t-roff.github.io/ex/3.2/exrm.pdf)
+  describe vi version 2.2 in detail.
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
