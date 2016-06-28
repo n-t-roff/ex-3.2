@@ -54,7 +54,9 @@ Features which had been invented after version 3.2:
   [viin.pdf](http://n-t-roff.github.io/ex/3.2/viin.pdf)
   and
   [exrm.pdf](http://n-t-roff.github.io/ex/3.2/exrm.pdf)
-  describe vi version 3.2 in detail.
+  describe vi version 3.2 in detail,
+  [ex3.1-3.5.pdf](http://n-t-roff.github.io/ex/3.6/ex3.1-3.5.pdf)
+  shows the differences to later vi versions.
 
 **Attention**:
 The original `vi` had not been 8-bit clean!
