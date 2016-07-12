@@ -81,7 +81,7 @@ setterm(type)
 	COLUMNS = tgetnum("co");
 	if (COLUMNS <= 20)
 		COLUMNS = 1000;
-	if (cgoto()[0] == 'O')	/* OOPS */
+	if (!CM || cgoto()[0] == 'O')	/* OOPS */
 		CA = 0, CM = 0;
 	else
 		CA = 1, costCM = strlen(tgoto(CM, 8, 10));

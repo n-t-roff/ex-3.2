@@ -3,9 +3,6 @@
 #include "ex_temp.h"
 #include "ex_tty.h"
 
-#undef	BUFSIZ
-#undef	EOF
-
 #include <stdio.h>
 #include <sys/dir.h>
 #include <paths.h>
