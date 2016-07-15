@@ -222,7 +222,7 @@ comprhs(seof)
 {
 	register char *rp, *orp;
 	register int c;
-	char orhsbuf[LBSIZE / 2];
+	char orhsbuf[RHSSIZE];
 
 	rp = rhsbuf;
 	CP(orhsbuf, rp);
@@ -250,7 +250,7 @@ comprhs(seof)
 magic:
 			if (c == '~') {
 				for (orp = orhsbuf; *orp; *rp++ = *orp++)
-					if (rp >= &rhsbuf[LBSIZE / 2 + 1])
+					if (rp >= &rhsbuf[RHSSIZE - 1])
 						goto toobig;
 				continue;
 			}
@@ -268,7 +268,7 @@ magic:
 				goto magic;
 			break;
 		}
-		if (rp >= &rhsbuf[LBSIZE / 2 - 1])
+		if (rp >= &rhsbuf[RHSSIZE - 1])
 toobig:
 			error("Replacement pattern too long@- limit 256 characters");
 		*rp++ = c;

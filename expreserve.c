@@ -62,6 +62,9 @@ struct 	header {
 #endif
 
 static void notify(int, char *, int);
+static int copyout(char *);
+static void mkdigits(char *);
+static void mknext(char *);
 
 #define eq(a, b) strcmp(a, b) == 0
 
@@ -72,6 +75,7 @@ main(int argc, char **argv)
 	struct dirent *dirent;
 	struct stat stbuf;
 
+	(void)argv;
 	/*
 	 * If only one argument, then preserve the standard input.
 	 */
@@ -139,8 +143,8 @@ char	pattern[] =	_PATH_PRESERVE "/Exaa`XXXXX";
  * file (this is the slowest thing since we must stat
  * to find a unique name), and finally copy the file.
  */
-copyout(name)
-	char *name;
+static int
+copyout(char *name)
 {
 	int i;
 	static int reenter;
@@ -264,8 +268,8 @@ format:
 /*
  * Blast the last 5 characters of cp to be the process number.
  */
-mkdigits(cp)
-	char *cp;
+static void
+mkdigits(char *cp)
 {
 	register int i, j;
 
@@ -278,8 +282,8 @@ mkdigits(cp)
  * three alphabetic characters into a sequence of the form 'aab', 'aac', etc.
  * Mktemp gets weird names too quickly to be useful here.
  */
-mknext(cp)
-	char *cp;
+static void
+mknext(char *cp)
 {
 	char *dcp;
 	struct stat stb;
