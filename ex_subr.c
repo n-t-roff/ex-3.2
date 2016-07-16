@@ -177,7 +177,7 @@ getn(cp)
 
 ignnEOF()
 {
-	register int c = getchar();
+	register int c = ex_getchar();
 
 	if (c == EOF)
 		ungetchar(c);
@@ -231,8 +231,8 @@ killcnt(int cnt)
 	if (value(TERSE) == 0) {
 		ex_printf(" %c%s", Command[0] | ' ', Command + 1);
 		if (Command[strlen(Command) - 1] != 'e')
-			putchar('e');
-		putchar('d');
+			ex_putchar('e');
+		ex_putchar('d');
 	}
 	putNFL();
 }
@@ -474,7 +474,7 @@ qcolumn(lim, gp)
 		lim[1] = x;
 	if (gp)
 		while (*gp)
-			putchar(*gp++);
+			ex_putchar(*gp++);
 	Outchar = OO;
 	return (vcntcol);
 }
@@ -662,7 +662,7 @@ syserror()
 	register int e = errno;
 
 	dirtcnt = 0;
-	putchar(' ');
+	ex_putchar(' ');
 	if (e >= 0 && errno <= std_nerrs)
 		error(std_errlist[e]);
 	else
@@ -681,7 +681,7 @@ vfindcol(i)
 	s = linebuf;
 	ignore(qcolumn(s - 1, NOSTR));
 	for (cp = linebuf; *cp && vcntcol < i; cp++)
-		putchar(*cp);
+		ex_putchar(*cp);
 	if (cp != linebuf)
 		cp--;
 	Outchar = OO;

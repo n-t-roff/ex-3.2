@@ -24,7 +24,7 @@ cmdreg()
 	register int wh = skipwh();
 
 	if (wh && isalpha(peekchar()))
-		c = getchar();
+		c = ex_getchar();
 	return (c);
 }
 
@@ -90,7 +90,7 @@ erewind()
 	if (argc > 1 && !hush) {
 		ex_printf(mesg("%d files@to edit"), argc);
 		if (inopen)
-			putchar(' ');
+			ex_putchar(' ');
 		else
 			putNFL();
 	}
@@ -254,7 +254,7 @@ ex_newline(void)
 
 	resetflav();
 	for (;;) {
-		c = getchar();
+		c = ex_getchar();
 		switch (c) {
 
 		case '^':
@@ -428,7 +428,7 @@ tailprim(comm, i, notinvis)
 	for (cp = tcommand; i > 0; i--)
 		*cp++ = *comm++;
 	while (*comm && peekchar() == *comm)
-		*cp++ = getchar(), comm++;
+		*cp++ = ex_getchar(), comm++;
 	c = peekchar();
 	if (notinvis || isalpha(c)) {
 		/*
@@ -440,7 +440,7 @@ tailprim(comm, i, notinvis)
 		if (tcommand[0] == 's' && any(c, "gcr"))
 			goto ret;
 		while (cp < &tcommand[19] && isalpha(peekchar()))
-			*cp++ = getchar();
+			*cp++ = ex_getchar();
 		*cp = 0;
 		if (notinvis)
 			serror("What?|%s: No such command from open/visual", tcommand);

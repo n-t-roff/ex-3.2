@@ -37,7 +37,7 @@ ex_printf(const char *fmt, ...)
 			/* ordinary (non-%) character */
 			if (fcode=='\0')
 				return;
-			putchar(fcode);
+			ex_putchar(fcode);
 		}
 		/* length modifier: -1 for h, 1 for l, 0 for none */
 		length = 0;
@@ -167,8 +167,8 @@ ex_printf(const char *fmt, ...)
 				}
 				else
 					if (!sign && fill <= 0) {
-						putchar('0');
-						putchar(fcode);
+						ex_putchar('0');
+						ex_putchar(fcode);
 						width -= 2;
 					}
 					else {
@@ -316,7 +316,7 @@ _p_emit(s, send)
 	
 	/* we may want to print a leading '-' before anything */
 	if (*s == '-' && fill < 0) {
-		putchar(*s++);
+		ex_putchar(*s++);
 		alen--;
 		width--;
 	}
@@ -325,14 +325,14 @@ _p_emit(s, send)
 	/* emit any leading pad characters */
 	if (!sign)
 		while (--npad >= 0)
-			putchar(cfill);
+			ex_putchar(cfill);
 			
 	/* emit the string itself */
 	while (--alen >= 0)
-		putchar(*s++);
+		ex_putchar(*s++);
 		
 	/* emit trailing pad characters */
 	if (sign)
 		while (--npad >= 0)
-			putchar(cfill);
+			ex_putchar(cfill);
 }

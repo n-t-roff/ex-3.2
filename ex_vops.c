@@ -134,7 +134,7 @@ vundo(void)
 		vprepins();
 		temp[vUA2 - linebuf] = 0;
 		for (cp = &temp[vUA1 - linebuf]; *cp;)
-			putchar(*cp++);
+			ex_putchar(*cp++);
 		Outchar = OO; hold = oldhold;
 		endim();
 		physdc(cindent(), cindent() + doomed);
@@ -228,7 +228,7 @@ vmove(void)
 			for (cp = cursor; *cp && cp < wcursor;) {
 				register int c = *cp++ & TRIM;
 
-				putchar(c ? c : ' ');
+				ex_putchar(c ? c : ' ');
 			}
 		}
 	}
@@ -482,7 +482,7 @@ smallchange:
 		bleep(i, cp);
 	else {
 		vcursbef(wcursor);
-		putchar('$');
+		ex_putchar('$');
 		i = cindent();
 	}
 

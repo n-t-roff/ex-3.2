@@ -22,7 +22,7 @@ bleep(i, cp)
 
 	i -= column(cp);
 	do
-		putchar('\\' | QUOTE);
+		ex_putchar('\\' | QUOTE);
 	while (--i >= 0);
 	rubble = 1;
 }
@@ -536,7 +536,7 @@ vbackup:
 			 */
 			case '\\':
 				x = destcol, y = destline;
-				putchar('\\');
+				ex_putchar('\\');
 				vcsync();
 				c = getkey();
 				if (c == tty.c_cc[VERASE]
@@ -560,7 +560,7 @@ vbackup:
 			case CTRL('q'):
 			case CTRL('v'):
 				x = destcol, y = destline;
-				putchar('^');
+				ex_putchar('^');
 				vgoto(y, x);
 				c = getkey();
 #if defined(TIOCSETC) && !defined(USG3TTY)
@@ -697,7 +697,7 @@ vbackup:
 				continue;
 			}
 def:
-			putchar(c);
+			ex_putchar(c);
 noput:
 			if (gcursor > &genbuf[LBSIZE - 2])
 				error("Line too long");

@@ -31,23 +31,25 @@ BINDIR=	${PREFIX}/bin
 LIBDIR=	${PREFIX}/libexec
 MANDIR=	${PREFIX}/share/man
 SHAREDIR=${PREFIX}/share/ex/${VERSION}
+LIBMALLOCDIR=libmapmalloc/common
 #
 # Either none or both of the next two lines needs to be uncommented
 #
-D_SBRK=	-DUNIX_SBRK
-MALLOC_O=mapmalloc.o
+#D_SBRK=	-DUNIX_SBRK
+#MALLOC_O=mapmalloc.o
+#MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	${BINDIR}/ctags
 DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-Wall -Wextra \
 	-fsanitize=undefined \
 	-fsanitize=integer
-#	-fsanitize=address
+	-fsanitize=address
 NONDEBUGFLAGS=	
+DEB=	${NONDEBUGFLAGS}
 _CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
-	${D_SBRK} -DLIBDIR='"${LIBDIR}"' \
-	${NONDEBUGFLAGS}
-_LDFLAGS=-s
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB}
+_LDFLAGS=${DEB} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
@@ -65,13 +67,13 @@ ${OBJS}: ex_vars.h ex.h Makefile.in ex_tune.h
 #	csh makeoptions ${_CFLAGS}
 
 a.out: ${OBJS}
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
+	${CC} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}
 
 exrecover: exrecover.o
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
+	${CC} ${LDFLAGS} ${_LDFLAGS} -o $@ exrecover.o
 
 expreserve: expreserve.o
-	${CC} ${CFLAGS} ${_CFLAGS} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
+	${CC} ${LDFLAGS} ${_LDFLAGS} -o $@ expreserve.o
 
 .c.o:
 	${CC} ${CFLAGS} ${_CFLAGS} -c $<
@@ -80,6 +82,7 @@ clean:
 #	If we dont have ex we cant make it so dont rm ex_vars.h
 	-rm -f a.out exrecover expreserve ex${VERSION}strings strings core trace tags
 	-rm -f *.o x*.[cs]
+	#cd ${LIBMALLOCDIR} && make clean
 
 distclean: clean
 	rm -f Makefile config.log
@@ -97,8 +100,7 @@ install: ${BINDIR} ${LIBDIR} ${MANDIR}/man1 ${SHAREDIR}
 	for i in recover preserve; do \
 		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
 	done
-	cp doc/*.pdf ${SHAREDIR}/
-	chmod 644 ${SHAREDIR}/*.pdf
+	install -m 644 doc/*.pdf ${SHAREDIR}/
 
 uninstall:
 	for i in ex vi view edit; do \
@@ -112,6 +114,9 @@ uninstall:
 
 ${BINDIR} ${LIBDIR} ${MANDIR}/man1 ${SHAREDIR}:
 	mkdir -p $@
+
+${LIBMALLOCDIR}/libmapmalloc.a:
+	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DEB}"
 
 lint:
 	lint ex.c ex_?*.c

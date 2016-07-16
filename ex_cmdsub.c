@@ -91,7 +91,7 @@ pargs()
 
 	for (ac = 0; ac < argc0; ac++) {
 		if (ac != 0)
-			putchar(' ');
+			ex_putchar(' ');
 		if (ac + argc == argc0 - 1)
 			ex_printf("[");
 		lprintf("%s", as);
@@ -467,7 +467,7 @@ tagfind(bool quick)
 
 		while (!iswhite(peekchar()) && !endcmd(peekchar()))
 			if (lp < &lasttag[sizeof lasttag - 2])
-				*lp++ = getchar();
+				*lp++ = ex_getchar();
 			else
 				ignchar();
 		*lp++ = 0;
@@ -476,7 +476,7 @@ badtag:
 			error("Bad tag|Give one tag per line");
 	} else if (lasttag[0] == 0)
 		error("No previous tag");
-	c = getchar();
+	c = ex_getchar();
 	if (!endcmd(c))
 		goto badtag;
 	if (c == EOF)
@@ -602,7 +602,7 @@ zop(hadpr)
 	znoclear = 0;
 	zweight = 0;
 	excl = exclam();
-	switch (c = op = getchar()) {
+	switch (c = op = ex_getchar()) {
 
 	case '^':
 		zweight = 1;
@@ -614,7 +614,7 @@ zop(hadpr)
 		}
 	case '=':
 	case '.':
-		c = getchar();
+		c = ex_getchar();
 		break;
 
 	case EOF:
@@ -628,7 +628,7 @@ zop(hadpr)
 	if (isdigit(c)) {
 		lines = c - '0';
 		for(;;) {
-			c = getchar();
+			c = ex_getchar();
 			if (!isdigit(c))
 				break;
 			lines *= 10;
@@ -713,7 +713,7 @@ zop2(int lines, int op)
 		return;
 	if (op == EOF && zhadpr) {
 		ex_getline(*addr1);
-		putchar('\r' | QUOTE);
+		ex_putchar('\r' | QUOTE);
 		shudclob = 1;
 	} else if (znoclear == 0 && CL != NOSTR && !inopen) {
 		flush1();
@@ -737,7 +737,7 @@ splitit(void)
 	register int l;
 
 	for (l = COLUMNS > 80 ? 40 : COLUMNS / 2; l > 0; l--)
-		putchar('-');
+		ex_putchar('-');
 	putnl();
 }
 
@@ -753,7 +753,7 @@ plines(adr1, adr2, movedot)
 		ex_getline(*addr);
 		pline(lineno(addr));
 		if (inopen)
-			putchar('\n' | QUOTE);
+			ex_putchar('\n' | QUOTE);
 		if (movedot)
 			dot = addr;
 	}
@@ -964,9 +964,9 @@ mapcmd(int un)
 		for (i=0; arrows[i].mapto; i++)
 			if (arrows[i].cap) {
 				lprintf("%s", arrows[i].descr);
-				putchar('\t');
+				ex_putchar('\t');
 				lprintf("%s", arrows[i].cap);
-				putchar('\t');
+				ex_putchar('\t');
 				lprintf("%s", arrows[i].mapto);
 				putNFL();
 			}
@@ -975,9 +975,9 @@ mapcmd(int un)
 
 	ignore(skipwh());
 	for (p=lhs; ; ) {
-		c = getchar();
+		c = ex_getchar();
 		if (c == CTRL('v')) {
-			c = getchar();
+			c = ex_getchar();
 		} else if (any(c, " \t")) {
 			if (un)
 				eol();	/* will usually cause an error */
@@ -999,9 +999,9 @@ mapcmd(int un)
 	if (skipend())
 		error("Missing rhs");
 	for (p=rhs; ; ) {
-		c = getchar();
+		c = ex_getchar();
 		if (c == CTRL('v')) {
-			c = getchar();
+			c = ex_getchar();
 		} else if (endcmd(c)) {
 			ungetchar(c);
 			break;

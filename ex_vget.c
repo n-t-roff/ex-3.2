@@ -208,7 +208,7 @@ readecho(c)
 		vclrech(0);
 	splitw++;
 	vgoto(WECHO, 0);
-	putchar(c);
+	ex_putchar(c);
 	vclreol();
 	vgoto(WECHO, 1);
 	cursor = linebuf; linebuf[0] = 0; genbuf[0] = c;
@@ -324,12 +324,12 @@ noteit(must)
 	vigoto(WECHO, 0);
 	ex_printf("%d %sline", notecnt, notesgn);
 	if (notecnt > 1)
-		putchar('s');
+		ex_putchar('s');
 	if (*notenam) {
 		ex_printf(" %s", notenam);
 		if (*(strend(notenam) - 1) != 'e')
-			putchar('e');
-		putchar('d');
+			ex_putchar('e');
+		ex_putchar('d');
 	}
 	vclreol();
 	notecnt = 0;

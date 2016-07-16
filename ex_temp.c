@@ -11,7 +11,14 @@
 #define	READ	0
 #define	WRITE	1
 
+#define	INCORB	64
+char	incorb[INCORB+1][BUFSIZ];
+#define	pagrnd(a)	((char *)(((intptr_t)a)&~(BUFSIZ-1)))
+int	stilinc;	/* up to here not written yet */
+
 static void rbflush(void);
+static void blkio(int, void *, ssize_t (*)());
+static void tflush(void);
 
 char	tfname[40];
 char	rfname[40];
@@ -60,6 +67,7 @@ dumbness:
 	tfile = creat(tfname, 0600);
 	if (tfile < 0)
 		goto dumbness;
+	stilinc = 0;
 	havetmp = 1;
 	close(tfile);
 	tfile = open(tfname, O_RDWR);
@@ -179,14 +187,36 @@ getblock(atl, iof)
 	return (obuff + off);
 }
 
-blkio(b, buf, iofcn)
-	short b;
-	char *buf;
-	int (*iofcn)();
+static void
+blkio(int b, void *buf, ssize_t (*iofcn)())
 {
 
+	if (b < INCORB) {
+		if (iofcn == read) {
+			memmove(buf, pagrnd(incorb[b+1]), BUFSIZ);
+			return;
+		}
+		memmove(pagrnd(incorb[b+1]), buf, BUFSIZ);
+		if (laste) {
+			if (b >= stilinc)
+				stilinc = b + 1;
+			return;
+		}
+	} else if (stilinc)
+		tflush();
 	lseek(tfile, b * BUFSIZ, SEEK_SET);
 	if ((*iofcn)(tfile, buf, BUFSIZ) != BUFSIZ)
+		filioerr(tfname);
+}
+
+static void
+tflush(void)
+{
+	int i = stilinc;
+	
+	stilinc = 0;
+	lseek(tfile, (long) 0, SEEK_SET);
+	if (write(tfile, pagrnd(incorb[1]), i * BUFSIZ) != (i * BUFSIZ))
 		filioerr(tfname);
 }
 
@@ -201,6 +231,8 @@ synctmp(void)
 	register line *a;
 	register short *bp;
 
+	if (stilinc)
+		return;
 	if (dol == zero)
 		return;
 	if (ichanged)
@@ -243,6 +275,8 @@ TSYNC()
 {
 
 	if (dirtcnt > 12) {
+		if (stilinc)
+			tflush();
 		dirtcnt = 0;
 		synctmp();
 	}
@@ -276,7 +310,7 @@ struct	rbuf {
 	short	rb_next;
 	char	rb_text[BUFSIZ - 2 * sizeof (short)];
 } *rbuf;
-short	rused[32];
+short	rused[256];
 short	rnleft;
 short	rblock;
 short	rnext;

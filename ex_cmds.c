@@ -67,7 +67,7 @@ error("Offset out-of-bounds|Offset after command too large");
 		if (inglobal == 0) {
 			flush();
 			if (!hush && value(PROMPT) && !globp && !noprompt && endline) {
-				putchar(':');
+				ex_putchar(':');
 				hadpr = 1;
 			}
 			TSYNC();
@@ -104,12 +104,12 @@ error("Offset out-of-bounds|Offset after command too large");
 			addr1 = one;
 			addr2 = dol;
 			given = 2;
-			c = getchar();
+			c = ex_getchar();
 		}
 		if (addr1 == 0)
 			addr1 = addr2;
 		if (c == ':')
-			c = getchar();
+			c = ex_getchar();
 
 		/*
 		 * Set command name for special character commands.
@@ -305,7 +305,7 @@ doecmd:
 		case 'k':
 casek:
 			pastwh();
-			c = getchar();
+			c = ex_getchar();
 			if (endcmd(c))
 				serror("Mark what?|%s requires following letter", Command);
 			ex_newline();
@@ -600,7 +600,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 3.2, January 4, 1980"
 				    " (3BSD).  git "
-				    "160712 15:26"
+				    "160716 19:01"
 				    );
 				noonl();
 				continue;
@@ -659,7 +659,7 @@ quit:
 /* @ */
 		case '*':
 		case '@':
-			c = getchar();
+			c = ex_getchar();
 			if (c=='\n' || c=='\r')
 				ungetchar(c);
 			if (any(c, "@*\n\r"))

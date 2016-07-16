@@ -80,7 +80,7 @@ getnum()
 	register int cnt;
 
 	for (cnt = 0; isdigit(peekcd());)
-		cnt = cnt * 10 + getchar() - '0';
+		cnt = cnt * 10 + ex_getchar() - '0';
 	return (cnt);
 }
 
@@ -249,7 +249,7 @@ error("No match to TOP|Address search hit TOP without matching pattern");
 			continue;
 
 		case '\'':
-			c = markreg(getchar());
+			c = markreg(ex_getchar());
 			if (c == 0)
 				error("Marks are ' and a-z");
 			addr = getmark(c);

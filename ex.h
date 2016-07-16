@@ -109,8 +109,6 @@ extern struct	option options[NOPTS + 1];
 	bool	trubble;
 	bool	techoin;
 	char	tracbuf[BUFSIZ];
-#	undef	putchar
-#	undef	getchar
 #endif
 
 /*

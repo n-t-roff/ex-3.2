@@ -127,7 +127,7 @@ vreopen(p, lineno, l)
 	if (hold & HOLDDOL)
 		return (d);
 	if (Putchar == listchar)
-		putchar('$');
+		ex_putchar('$');
 
 	/*
 	 * Optimization of cursor motion may prevent screen rollup if the
@@ -244,7 +244,7 @@ vinslin(p, cnt, l)
 		for (i = cnt - 1; i > 0; i--) {
 			vgoto(outline+1, 0), vputp(AL, WECHO + 1 - outline);
 			if ((hold & HOLDAT) == 0)
-				putchar('@');
+				ex_putchar('@');
 		}
 		vadjAL(p, cnt);
 	} else if (SR && p == WTOP) {
@@ -255,7 +255,7 @@ vinslin(p, cnt, l)
 		for (i = cnt; i > 0; i--) {
 			vgoto(p, 0), vputp(SR, 0);
 			if (i > 1 && (hold & HOLDAT) == 0)
-				putchar('@');
+				ex_putchar('@');
 			/*
 			 * If we are at the top of the screen, and the
 			 * terminal retains display above, then we
