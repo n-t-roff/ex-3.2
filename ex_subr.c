@@ -657,7 +657,8 @@ strcLIN(dp)
 	CP(linebuf, dp);
 }
 
-syserror()
+void
+syserror(void)
 {
 	register int e = errno;
 

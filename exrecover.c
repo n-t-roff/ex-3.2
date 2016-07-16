@@ -43,6 +43,19 @@
 char	mydir[] =	_PATH_PRESERVE;
 
 /*
+ * Here we save the information about files, when
+ * you ask us what files we have saved for you.
+ * We buffer file name, number of lines, and the time
+ * at which the file was saved.
+ */
+struct svfile {
+	char	sf_name[FNSIZE + 1];
+	int	sf_lines;
+	char	sf_entry[MAXNAMLEN + 1];
+	time_t	sf_time;
+};
+
+/*
  * Limit on the number of printed entries
  * when an, e.g. ``ex -r'' command is given.
  */
@@ -56,10 +69,15 @@ int	tfile = -1;
 static void listfiles(char *);
 static void findtmp(char *);
 static void searchdir(char *);
+static void enter(struct svfile *, char *, int);
+static int qucmp(const void *, const void *);
+static int yeah(char *);
+static void scrapbad(void);
+static void wrerror(void);
+static void blkio(int, void *, ssize_t (*)());
 
-main(argc, argv)
-	int argc;
-	char *argv[];
+int
+main(int argc, char **argv)
 {
 	register char *cp;
 	register int b, i;
@@ -87,7 +105,10 @@ main(argc, argv)
 	cp = ctime(&H.Time);
 	cp[19] = 0;
 	fprintf(stderr, " [Dated: %s", cp);
-	fprintf(stderr, vercnt > 1 ? ", newest of %d saved]" : "]", vercnt);
+	if (vercnt > 1)
+		fprintf(stderr, ", newest of %d saved]", vercnt);
+	else
+		fprintf(stderr, "]");
 	H.Flines++;
 
 	/*
@@ -111,7 +132,7 @@ main(argc, argv)
 	b = 0;
 	while (H.Flines > 0) {
 		ignorl(lseek(tfile, (long) blocks[b] * BUFSIZ, SEEK_SET));
-		i = H.Flines < BUFSIZ / sizeof (line) ?
+		i = H.Flines < (ssize_t)(BUFSIZ / sizeof (line)) ?
 			H.Flines * sizeof (line) : BUFSIZ;
 		if (read(tfile, (char *) dot, i) != i) {
 			perror(nb);
@@ -156,7 +177,7 @@ main(argc, argv)
 	/*
 	 * Adieu.
 	 */
-	exit(0);
+	return 0;
 }
 
 /*
@@ -176,19 +197,6 @@ error(char *str)
 		fprintf(stderr, "\n");
 	exit(1);
 }
-
-/*
- * Here we save the information about files, when
- * you ask us what files we have saved for you.
- * We buffer file name, number of lines, and the time
- * at which the file was saved.
- */
-struct svfile {
-	char	sf_name[FNSIZE + 1];
-	int	sf_lines;
-	char	sf_entry[MAXNAMLEN + 1];
-	time_t	sf_time;
-};
 
 static void
 listfiles(char *dirname)
@@ -277,7 +285,7 @@ listfiles(char *dirname)
 		cp[10] = 0;
 		fprintf(stderr, "On %s at ", cp);
  		cp[16] = 0;
-		fprintf(stderr, &cp[11]);
+		fputs(&cp[11], stderr);
 		fprintf(stderr, " saved %d lines of file \"%s\"\n",
 		    fp->sf_lines, fp->sf_name);
 	}
@@ -286,9 +294,8 @@ listfiles(char *dirname)
 /*
  * Enter a new file into the saved file information.
  */
-enter(fp, fname, count)
-	struct svfile *fp;
-	char *fname;
+static void
+enter(struct svfile *fp, char *fname, int count)
 {
 	register char *cp, *cp2;
 	register struct svfile *f, *fl;
@@ -331,12 +338,14 @@ enter(fp, fname, count)
  * Do the qsort compare to sort the entries first by file name,
  * then by modify time.
  */
-qucmp(p1, p2)
-	struct svfile *p1, *p2;
+static int
+qucmp(const void *vp1, const void *vp2)
 {
 	register int t;
+	struct svfile *p1 = (struct svfile *)vp1,
+		      *p2 = (struct svfile *)vp2;
 
-	if (t = strcmp(p1->sf_name, p2->sf_name))
+	if ((t = strcmp(p1->sf_name, p2->sf_name)))
 		return(t);
 	if (p1->sf_time > p2->sf_time)
 		return(-1);
@@ -413,7 +422,6 @@ searchdir(char *dirname)
 {
 	struct dirent *dirent;
 	DIR *dir;
-	char dbuf[BUFSIZ];
 
 	dir = opendir(dirname);
 	if (dir == NULL)
@@ -460,8 +468,8 @@ searchdir(char *dirname)
  * if its really an editor temporary and of this
  * user and the file specified.
  */
-yeah(name)
-	char *name;
+static int
+yeah(char *name)
 {
 
 	tfile = open(name, O_RDWR);
@@ -486,11 +494,6 @@ nope:
 	return (1);
 }
 
-preserve()
-{
-
-}
-
 /*
  * Find the true end of the scratch file, and ``LOSE''
  * lines which point into thin air.  This lossage occurs
@@ -505,7 +508,8 @@ preserve()
  * This only seems to happen on very heavily loaded systems, and
  * not very often.
  */
-scrapbad()
+static void
+scrapbad(void)
 {
 	register line *ip;
 	struct stat stbuf;
@@ -563,7 +567,7 @@ null:
 				fprintf(stderr, " [Lost line(s):");
 			fprintf(stderr, " %d", was);
 			if ((ip - 1) - zero > was)
-				fprintf(stderr, "-%d", (ip - 1) - zero);
+				fprintf(stderr, "-%d", (int)((ip - 1) - zero));
 			bad++;
 			was = 0;
 		}
@@ -572,7 +576,7 @@ null:
 			fprintf(stderr, " [Lost line(s):");
 		fprintf(stderr, " %d", was);
 		if (dol - zero != was)
-			fprintf(stderr, "-%d", dol - zero);
+			fprintf(stderr, "-%d", (int)(dol - zero));
 		bad++;
 	}
 	if (bad)
@@ -654,13 +658,15 @@ putfile(void)
 	cntch += nib;
 }
 
-wrerror()
+static void
+wrerror(void)
 {
 
 	syserror();
 }
 
-clrstats()
+void
+clrstats(void)
 {
 
 	ninbuf = 0;
@@ -673,8 +679,8 @@ clrstats()
 #define	READ	0
 #define	WRITE	1
 
-ex_getline(tl)
-	line tl;
+void
+ex_getline(line tl)
 {
 	register char *bp, *lp;
 	register int nl;
@@ -683,7 +689,7 @@ ex_getline(tl)
 	bp = getblock(tl, READ);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*lp++ = *bp++)
+	while ((*lp++ = *bp++))
 		if (--nl == 0) {
 			bp = getblock(tl += INCRMT, READ);
 			nl = nleft;
@@ -691,9 +697,7 @@ ex_getline(tl)
 }
 
 char *
-getblock(atl, iof)
-	line atl;
-	int iof;
+getblock(line atl, int iof)
 {
 	register int bno, off;
 	
@@ -722,10 +726,8 @@ getblock(atl, iof)
 	return (obuff + off);
 }
 
-blkio(b, buf, iofcn)
-	short b;
-	char *buf;
-	int (*iofcn)();
+static void
+blkio(int b, void *buf, ssize_t (*iofcn)())
 {
 
 	lseek(tfile, (long) (unsigned) b * BUFSIZ, SEEK_SET);
@@ -733,7 +735,8 @@ blkio(b, buf, iofcn)
 		syserror();
 }
 
-syserror()
+void
+syserror(void)
 {
 	dirtcnt = 0;
 	write(2, " ", 1);
