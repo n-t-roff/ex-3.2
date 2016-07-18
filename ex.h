@@ -277,16 +277,14 @@ line	*undadot;		/* If we saved all lines, dot reverts here */
 #define	NOSTR	(char *) 0
 #define	NOLINE	(line *) 0
 
-extern int	(*Outchar)();
-extern int	(*Pline)();
-extern int	(*Putchar)();
+extern void	(*Outchar)();
+extern void	(*Pline)();
+extern void	(*Putchar)();
 int	(*oldhup)();
-int	(*setlist())();
-int	(*setnorm())();
-int	(*setnorm())();
-int	(*setnumb())();
+void	(*setlist(bool))();
+void	(*setnumb(bool))();
 line	*address();
-char	*cgoto();
+char	*cgoto(void);
 char	*genindent();
 char	*getblock(line, int);
 char	*getenv();
@@ -319,15 +317,15 @@ int	getfile();
 int	getsub();
 int	gettty();
 int	join();
-int	listchar();
-int	normline();
-int	numbline();
+void	listchar(int);
+void	normline(void);
+void	numbline(int);
 int	(*oldquit)();
 int	onhup();
 int	onintr();
-int	putch();
+int	putch(int);
 int	shift();
-int	termchar();
+void	termchar(int);
 void	vfilter(void);
 #ifdef CBREAK
 int	vintr();
@@ -403,6 +401,22 @@ void	ex_printf(const char *, ...);
 void	clrstats(void);
 void	ex_getline(line);
 void	syserror(void);
+void	ex_putchar(int);
+void	flush(void);
+void	flush1(void);
+void	fgoto(void);
+void	tab(int);
+void	noteinp(void);
+void	termreset(void);
+void	draino(void);
+void	flusho(void);
+void	putnl(void);
+void	putpad(char *);
+void	setoutt(void);
+void	lprintf(char *, char *);
+void	putNFL(void);
+void	gTTY(int);
+void	noonl(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
