@@ -408,7 +408,7 @@ fgoto(void)
  * Used by "set all".
  */
 void
-tab(int col)
+ex_tab(int col)
 {
 
 	flush1();
