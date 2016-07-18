@@ -330,7 +330,7 @@ void	vfilter(void);
 #ifdef CBREAK
 int	vintr();
 #endif
-int	vputch();
+int	vputch(int);
 void	vshftop(void);
 int	yank();
 void	ostop(struct termios);
