@@ -333,7 +333,7 @@ again:
 
 getch()
 {
-	char c;
+	int c;
 
 	if (read(2, &c, 1) != 1)
 		return (EOF);

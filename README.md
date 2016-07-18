@@ -12,7 +12,7 @@ git pull
 ```
 Some configuration (e.g. installation paths) can be done in the
 [`makefile`](https://github.com/n-t-roff/ex-3.2/blob/master/Makefile.in).
-For compiling it on BSD and Linux autoconfiguration is required:
+For compiling on BSD and Linux autoconfiguration is required:
 ```sh
 $ ./configure
 ```
@@ -33,14 +33,15 @@ $ make distclean
 ## Usage notes for version 3.2
 * PAGE-UP, PAGE-DOWN keys may work on most terminals by putting
   `map  ^[[5~ ^B` and `map  ^[[6~ ^F` into `~/.exrc`.
-* The are issues with Undo.
-  For the moment save more often to not loose important changes.
 * There are currently issues with lines longer than the screen width.
+  Make the screen wide enough before opening vi or break long lines
+  before they exceed the screen width.
 * When inserting an unnamed buffer with `P` or `p` after a macro
   the whole file is inserted instead.
   (Note that e.g. the arrow keys are considered macros.)
   Either use named buffers or 'h', 'j', 'k', 'l', '^F', '^B'
   for motions *between* yank and put commands.
+  (This bug is fixed in ex version 3.4.)
 * If the screen with is not a multiple of the tab width
   tab characters are displayed wrong
   after screen updates
@@ -70,9 +71,3 @@ Features which had been invented after version 3.2:
   describe vi version 3.2 in detail,
   [ex3.1-3.5.pdf](http://n-t-roff.github.io/ex/3.6/ex3.1-3.5.pdf)
   shows the differences to later vi versions.
-
-**Attention**:
-The original `vi` had not been 8-bit clean!
-Moreover it does automatically change all 8-bit characters to 7-bit
-in the whole file even if no editing is done!
-This will e.g. destroy all UTF-8 characters.

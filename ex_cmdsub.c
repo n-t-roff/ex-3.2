@@ -1123,12 +1123,12 @@ addmac(char *src,char *dest,char *dname)
  * get the macro from.
  */
 cmdmac(c)
-char c;
+int c;
 {
 	char macbuf[BUFSIZ];
 	line *ad, *a1, *a2;
 	char *oglobp;
-	char pk;
+	int pk;
 	bool oinglobal;
 
 	lastmac = c;

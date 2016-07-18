@@ -408,7 +408,7 @@ shread()
 int	getREG();
 
 putreg(c)
-	char c;
+	int c;
 {
 	struct rbuf arbuf;
 	register line *odot = dot;
@@ -447,7 +447,7 @@ putreg(c)
 }
 
 partreg(c)
-	char c;
+	int c;
 {
 
 	return (mapreg(c)->rg_flags);
@@ -574,7 +574,7 @@ rbflush(void)
 
 /* Register c to char buffer buf of size buflen */
 regbuf(c, buf, buflen)
-char c;
+int c;
 char *buf;
 int buflen;
 {

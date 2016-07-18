@@ -812,7 +812,7 @@ vishft()
  * Now do the insert of the characters (finally).
  */
 viin(c)
-	char c;
+	int c;
 {
 	register char *tp, *up;
 	register int i, j;
@@ -1310,7 +1310,7 @@ tvliny()
 }
 
 tracec(c)
-	char c;
+	int c;
 {
 
 	if (!techoin)

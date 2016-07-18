@@ -47,8 +47,15 @@ DEBUGFLAGS=	-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
 	-fsanitize=address
 NONDEBUGFLAGS=	
 DEB=	${NONDEBUGFLAGS}
+#
+# If -DBIT8 is used, files containing 8-bit data can be edited.  Nethertheless
+# it is not possible to insert or change 8-bit characters.
+# Warning: If -DBIT8 is *not* used, all 8-bit characters in a file are changed
+# to 7-bit (even if no editing is done).  Files to be edited must not have any
+# 8-bit characters in this case!
+#
 _CFLAGS=	-DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
-	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB}
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB} -DBIT8
 _LDFLAGS=${DEB} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \

@@ -16,7 +16,7 @@ static void addto(char *, char *);
  * Return the key.
  */
 ungetkey(c)
-	char c;
+	int c;
 {
 
 	if (Peekkey != ATTN)
@@ -28,7 +28,7 @@ ungetkey(c)
  */
 getkey()
 {
-	register char c;
+	int c;
 
 	do {
 		c = getbr();
@@ -62,7 +62,7 @@ short	precbksl;
  */
 getbr()
 {
-	char ch;
+	int ch;
 	register int c, d;
 	register char *colp;
 
@@ -195,7 +195,7 @@ peekkey()
  * A return value of 1 means the user blewit or blewit away.
  */
 readecho(c)
-	char c;
+	int c;
 {
 	register char *sc = cursor;
 	register int (*OP)();

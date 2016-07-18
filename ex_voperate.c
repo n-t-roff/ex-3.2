@@ -28,7 +28,7 @@ operate(int c, int cnt)
 	char *oglobp, *ocurs;
 	register line *addr;
 	static char lastFKND, lastFCHR;
-	char d;
+	int d;
 
 	moveop = vmove, deleteop = vdelete;
 	wcursor = cursor;
@@ -687,7 +687,7 @@ errlab:
  * Find single character c, in direction dir from cursor.
  */
 find(c)
-	char c;
+	int c;
 {
 
 	for(;;) {

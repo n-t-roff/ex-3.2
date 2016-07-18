@@ -119,7 +119,11 @@ extern struct	option options[NOPTS + 1];
  * Only arrays of and pointers to characters are used and parameters and
  * registers are never declared character.
  */
+#ifdef BIT8
+#define	QUOTE	0400
+#else
 #define	QUOTE	0200
+#endif
 #define	TRIM	0177
 #ifndef CTRL
 #define	CTRL(c)	(c & 037)

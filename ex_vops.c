@@ -521,7 +521,7 @@ smallchange:
  * you are better off with slowopen.
  */
 voOpen(c, cnt)
-	char c;
+	int c;
 	register int cnt;
 {
 	register int ind = 0, i;

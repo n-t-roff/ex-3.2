@@ -755,7 +755,7 @@ vgetsplit()
  * LBSIZE characters and also does hacks for the R command.
  */
 vmaxrep(ch, cnt)
-	char ch;
+	int ch;
 	register int cnt;
 {
 	register int len, replen;

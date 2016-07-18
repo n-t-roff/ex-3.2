@@ -21,7 +21,7 @@ vmain(void)
 	register int c, cnt, i;
 	char esave[TUBECOLS];
 	char *oglobp;
-	char d;
+	int d;
 	line *addr;
 	int ind;
 	int onumber, olist, (*OPline)(), (*OPutchar)();
