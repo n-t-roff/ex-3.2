@@ -405,7 +405,7 @@ void	ex_putchar(int);
 void	flush(void);
 void	flush1(void);
 void	fgoto(void);
-void	tab(int);
+void	ex_tab(int);
 void	noteinp(void);
 void	termreset(void);
 void	draino(void);
