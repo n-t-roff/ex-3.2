@@ -239,7 +239,7 @@ main(int ac, char **av)
 		if (ac == 0) {
 			ppid = 0;
 			setrupt();
-			execl(EXRECOVER, "exrecover", "-r", 0);
+			execl(EXRECOVER, "exrecover", "-r", NULL);
 			filioerr(EXRECOVER);
 			exit(1);
 		}
@@ -272,11 +272,12 @@ main(int ac, char **av)
 				setterm(cp);
 		}
 	}
-	if (setexit() == 0 && !fast && intty)
-		if (globp = getenv("EXINIT"))
+	if (setexit() == 0 && !fast && intty) {
+		if ((globp = getenv("EXINIT")))
 			commands(1,1);
 		else if ((cp = getenv("HOME")) != 0)
 			source(strcat(strcpy(genbuf, cp), "/.exrc"), 1);
+	}
 
 	/*
 	 * Initial processing.  Handle tag, recover, and file argument
@@ -392,6 +393,7 @@ onhup(int i)
 void
 onintr(int i)
 {
+	char *s = "\nInterrupt";
 
 	(void)i;
 #ifndef CBREAK
@@ -409,7 +411,7 @@ onintr(int i)
 	} else
 		vraw();
 #endif
-	error("\nInterrupt" + inopen);
+	error(inopen ? s + 1 : s);
 }
 
 /*

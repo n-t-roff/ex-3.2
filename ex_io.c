@@ -227,7 +227,7 @@ glob(struct glob *gp)
 		close(1);
 		dup(pvec[1]);
 		close(pvec[0]);
-		execl(svalue(SHELL), "sh", "-c", genbuf, 0);
+		execl(svalue(SHELL), "sh", "-c", genbuf, NULL);
 		oerrno = errno; close(1); dup(2); errno = oerrno;
 		filioerr(svalue(SHELL));
 	}

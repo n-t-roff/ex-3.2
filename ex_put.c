@@ -549,10 +549,10 @@ dontcr:
 			goto out;
 	}
 	if (GT && !insmode && destcol - outcol > 1) {
-	for (;;) {
-		i = (outcol / value(HARDTABS) + 1) * value(HARDTABS);
-		if (i > destcol)
-			break;
+		for (;;) {
+			i = (outcol / value(HARDTABS) + 1) * value(HARDTABS);
+			if (i > destcol)
+				break;
 			if (TA)
 				tputs(TA, 0, plodput);
 			else

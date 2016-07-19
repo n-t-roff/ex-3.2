@@ -3,6 +3,7 @@
 #include "ex_argv.h"
 #include "ex_temp.h"
 #include "ex_tty.h"
+#include "ex_vis.h"
 
 /*
  * Command mode subroutines implementing
@@ -118,7 +119,7 @@ delete(bool hush)
 
 	nonzero();
 	if (inopen >= 0 && (inopen || !inglobal)) {
-		register int (*dsavint)();
+		void (*dsavint)(int);
 
 		change();
 		dsavint = signal(SIGINT, SIG_IGN);
@@ -221,7 +222,7 @@ join(int c)
 				}
 			}
 		}
-		while (*cp++ = *cp1++)
+		while ((*cp++ = *cp1++))
 			if (cp > &genbuf[LBSIZE-2])
 				error("Line overflow|Result line of join would be too long");
 		cp--;
@@ -303,7 +304,7 @@ move1(int cflag, line *addrt)
 	} else
 		error("Move to a moved line");
 	change();
-	if (!inglobal)
+	if (!inglobal) {
 		if (cflag) {
 			undap1 = addrt + 1;
 			undap2 = undap1 + lines;
@@ -315,6 +316,7 @@ move1(int cflag, line *addrt)
 			unddel = addrt;
 			squish();
 		}
+	}
 }
 
 static int
@@ -522,7 +524,7 @@ badtags:
 				 */
 				names['t'-'a'] = *dot &~ 01;
 				if (inopen) {
-					extern char *ncols['z'-'a'+1];
+					extern char *ncols['z'-'a'+2];
 					extern char *cursor;
 
 					ncols['t'-'a'] = cursor;
@@ -1063,7 +1065,7 @@ addmac(char *src,char *dest,char *dname)
 		 * linefeed, and escape, he can screw himself. This is
 		 * so weird I don't bother to check for it.
 		 */
-		if (isalpha(src[0]) && src[1] || any(src[0],":"))
+		if ((isalpha(src[0]) && src[1]) || any(src[0],":"))
 			error("Too dangerous to map that");
 		/*
 		 * If the src were null it would cause the dest to

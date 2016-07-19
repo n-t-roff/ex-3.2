@@ -3,6 +3,7 @@
 #include "ex_argv.h"
 #include "ex_temp.h"
 #include "ex_tty.h"
+#include "ex_vis.h"
 
 bool	pflag, nflag;
 int	poffset;
@@ -46,7 +47,7 @@ commands(bool noprompt, bool exitoneof)
 		 * before the next command.
 		 */
 		if (pflag ||
-		    lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline) {
+		    (lchng != chng && value(AUTOPRINT) && !inglobal && !inopen && endline)) {
 			pflag = 0;
 			nochng();
 			if (dol != zero) {
@@ -83,7 +84,7 @@ error("Offset out-of-bounds|Offset after command too large");
 			addr1 = addr2;
 			addr = address(0);
 			c = getcd();
-			if (addr == 0)
+			if (addr == 0) {
 				if (c == ',')
 					addr = dot;
 				else if (addr1 != 0) {
@@ -91,6 +92,7 @@ error("Offset out-of-bounds|Offset after command too large");
 					break;
 				} else
 					break;
+			}
 			addr2 = addr;
 			given++;
 			if (c == ';') {
@@ -132,7 +134,6 @@ error("Offset out-of-bounds|Offset after command too large");
 notinvis:
 				tailprim(Command, 1, 1);
 		}
-choice:
 		switch (c) {
 
 		case 'a':
@@ -600,7 +601,7 @@ quit:
 				/* should use SCCS subst here */
 				ex_printf("Version 3.2, January 4, 1980"
 				    " (3BSD).  git "
-				    "160718 14:20"
+				    "160719 18:57"
 				    );
 				noonl();
 				continue;
