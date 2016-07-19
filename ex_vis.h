@@ -306,3 +306,6 @@ int	lmatchp(line *);
 void	lsmatch(char *);
 int	lnext(void);
 int	lbrack(int, void (*)());
+int	word(void (*)(), int);
+int	wordof(int, char *);
+int	wordch(char *);

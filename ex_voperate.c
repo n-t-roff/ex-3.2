@@ -8,6 +8,10 @@
 
 char	vscandir[2] =	{ '/', 0 };
 
+static int find(int);
+static int edge(void);
+static int margin(void);
+
 /*
  * Decode an operator/operand type command.
  * Eventually we switch to an operator subroutine in ex_vops.c.
@@ -686,8 +690,8 @@ errlab:
 /*
  * Find single character c, in direction dir from cursor.
  */
-find(c)
-	int c;
+static int
+find(int c)
 {
 
 	for(;;) {
@@ -703,9 +707,8 @@ find(c)
  * Do a word motion with operator op, and cnt more words
  * to go after this.
  */
-word(op, cnt)
-	register int (*op)();
-	int cnt;
+int
+word(void (*op)(), int cnt)
 {
 	register int which;
 	register char *iwc;
@@ -782,9 +785,8 @@ eend(void (*op)())
  * Wordof tells whether the character at *wc is in a word of
  * kind which (blank/nonblank words are 0, conservative words 1).
  */
-wordof(which, wc)
-	char which;
-	register char *wc;
+int
+wordof(int which, char *wc)
 {
 
 	if (isspace(*wc))
@@ -796,8 +798,8 @@ wordof(which, wc)
  * Wordch tells whether character at *wc is a word character
  * i.e. an alfa, digit, or underscore.
  */
-wordch(wc)
-	char *wc;
+int
+wordch(char *wc)
 {
 	register int c;
 
@@ -808,7 +810,8 @@ wordch(wc)
 /*
  * Edge tells when we hit the last character in the current line.
  */
-edge()
+static int
+edge(void)
 {
 
 	if (linebuf[0] == 0)
@@ -822,7 +825,8 @@ edge()
 /*
  * Margin tells us when we have fallen off the end of the line.
  */
-margin()
+static int
+margin(void)
 {
 
 	return (wcursor < linebuf || wcursor[0] == 0);

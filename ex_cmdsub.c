@@ -16,15 +16,18 @@ line	*tad1;
 static void somechange(void);
 static void splitit(void);
 static void addmac(char *,char *,char *);
+static int jnoop(void);
+static void move1(int, line *);
+static int getcopy(void);
+static int getput(void);
 
 /*
  * Append after line a lines returned by function f.
  * Be careful about intermediate states to avoid scramble
  * if an interrupt comes in.
  */
-append(f, a)
-	int (*f)();
-	line *a;
+int
+append(int (*f)(), line *a)
 {
 	register line *a1, *a2, *rdot;
 	int nline;
@@ -72,7 +75,8 @@ append(f, a)
 	return (nline);
 }
 
-appendnone()
+void
+appendnone(void)
 {
 
 	if (inopen >= 0 && (inopen || !inglobal)) {
@@ -84,7 +88,8 @@ appendnone()
 /*
  * Print out the argument list, with []'s around the current name.
  */
-pargs()
+void
+pargs(void)
 {
 	register char **av = argv0, *as = args0;
 	register int ac;
@@ -106,8 +111,8 @@ pargs()
  * Delete lines; two cases are if we are really deleting,
  * more commonly we are just moving lines to the undo save area.
  */
-delete(hush)
-	bool hush;
+void
+delete(bool hush)
 {
 	register line *a1, *a2;
 
@@ -158,7 +163,8 @@ delete(hush)
 		killed();
 }
 
-deletenone()
+void
+deletenone(void)
 {
 
 	if (inopen >= 0 && (inopen || !inglobal)) {
@@ -191,10 +197,10 @@ squish(void)
  * Join lines.  Special hacks put in spaces, two spaces if
  * preceding line ends with '.', or no spaces if next line starts with ).
  */
-static	int jcount, jnoop();
+static	int jcount;
 
-join(c)
-	int c;
+void
+join(int c)
 {
 	register line *a1;
 	register char *cp, *cp1;
@@ -226,8 +232,8 @@ join(c)
 	ignore(append(jnoop, --addr1));
 }
 
-static
-jnoop()
+static int
+jnoop(void)
 {
 
 	return(--jcount);
@@ -237,9 +243,9 @@ jnoop()
  * Move and copy lines.  Hard work is done by move1 which
  * is also called by undo.
  */
-int	getcopy();
 
-move()
+void
+move(void)
 {
 	register line *adt;
 	bool iscopy = 0;
@@ -260,9 +266,8 @@ move()
 	killed();
 }
 
-move1(cflag, addrt)
-	int cflag;
-	line *addrt;
+static void
+move1(int cflag, line *addrt)
 {
 	register line *adt, *ad1, *ad2;
 	int lines;
@@ -312,7 +317,8 @@ move1(cflag, addrt)
 		}
 }
 
-getcopy()
+static int
+getcopy(void)
 {
 
 	if (tad1 > addr2)
@@ -324,7 +330,8 @@ getcopy()
 /*
  * Put lines in the buffer from the undo save area.
  */
-getput()
+static int
+getput(void)
 {
 
 	if (tad1 > unddol)
@@ -357,8 +364,8 @@ put(void)
  * Argument says pkills have meaning, e.g. called from
  * put; it is 0 on calls from putreg.
  */
-pragged(kill)
-	bool kill;
+void
+pragged(bool kill)
 {
 	extern char *cursor;
 	register char *gp = &genbuf[cursor - linebuf];
@@ -394,9 +401,8 @@ pragged(kill)
  * Shift lines, based on c.
  * If c is neither < nor >, then this is a lisp aligning =.
  */
-shift(c, cnt)
-	int c;
-	int cnt;
+void
+shift(int c, int cnt)
 {
 	register line *addr;
 	register char *cp;
@@ -569,7 +575,8 @@ badtags:
  * Save lines from addr1 thru addr2 as though
  * they had been deleted.
  */
-yank()
+void
+yank(void)
 {
 
 	save12();
@@ -591,8 +598,8 @@ bool	zhadpr;
 bool	znoclear;
 short	zweight;
 
-zop(hadpr)
-	int hadpr;
+void
+zop(int hadpr)
 {
 	register int c, lines, op;
 	bool excl;
@@ -741,10 +748,8 @@ splitit(void)
 	putnl();
 }
 
-plines(adr1, adr2, movedot)
-	line *adr1;
-	register line *adr2;
-	bool movedot;
+void
+plines(line *adr1, line *adr2, bool movedot)
 {
 	register line *addr;
 
@@ -759,7 +764,8 @@ plines(adr1, adr2, movedot)
 	}
 }
 
-pofix()
+void
+pofix(void)
 {
 
 	if (inopen && Outchar != termchar) {
@@ -785,8 +791,8 @@ pofix()
  *
  * Undo is its own inverse.
  */
-undo(c)
-	bool c;
+void
+undo(bool c)
 {
 	register int i;
 	register line *jp, *kp;
@@ -1122,8 +1128,8 @@ addmac(char *src,char *dest,char *dname)
  * Implements macros from command mode. c is the buffer to
  * get the macro from.
  */
-cmdmac(c)
-int c;
+void
+cmdmac(int c)
 {
 	char macbuf[BUFSIZ];
 	line *ad, *a1, *a2;

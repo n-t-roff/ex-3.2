@@ -375,7 +375,9 @@ vroll(int cnt)
 static void
 vrollR(int cnt)
 {
+#ifndef CBREAK
 	register bool fried = 0;
+#endif
 	short oldhold = hold;
 
 #ifdef ADEBUG

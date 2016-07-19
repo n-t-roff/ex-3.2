@@ -311,12 +311,12 @@ char	*vskipwh(char *);
 void	put(void);
 int	putreg();
 int	YANKreg();
-int	delete();
+void	delete(bool);
 int	filter();
 int	getfile();
 int	getsub();
 int	gettty();
-int	join();
+void	join(int);
 void	listchar(int);
 void	normline(void);
 void	numbline(int);
@@ -324,7 +324,7 @@ int	(*oldquit)();
 int	onhup();
 int	onintr();
 int	putch(int);
-int	shift();
+void	shift(int, int);
 void	termchar(int);
 void	vfilter(void);
 #ifdef CBREAK
@@ -332,7 +332,7 @@ int	vintr();
 #endif
 int	vputch(int);
 void	vshftop(void);
-int	yank();
+void	yank(void);
 void	ostop(struct termios);
 struct termios setty(struct termios);
 struct termios unixex(char *, char *, int, int);
@@ -452,6 +452,17 @@ void	strcLIN(char *);
 int	whitecnt(char *);
 void	markit(line *);
 void	dingdong(void);
+int	append(int (*)(), line *);
+void	appendnone(void);
+void	pargs(void);
+void	deletenone(void);
+void	move(void);
+void	pragged(bool);
+void	zop(int);
+void	plines(line *, line *, bool);
+void	pofix(void);
+void	undo(bool);
+void	cmdmac(int);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
