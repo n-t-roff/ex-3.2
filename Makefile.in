@@ -68,10 +68,10 @@ all:	a.out exrecover expreserve #tags
 tags:
 	${CTAGS} -w *.h *.c
 
-${OBJS}: ex_vars.h ex.h Makefile.in ex_tune.h
+${OBJS}: ex.h Makefile.in ex_tune.h #ex_vars.h
 
-#ex_vars.h:
-#	csh makeoptions ${_CFLAGS}
+ex_vars.h:
+	csh makeoptions ${CC} -E ${_CFLAGS}
 
 a.out: ${OBJS}
 	${CC} ${LDFLAGS} ${_LDFLAGS} ${OBJS} ${TERMLIB}

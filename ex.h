@@ -129,6 +129,7 @@ extern struct	option options[NOPTS + 1];
 #else
 #define	QUOTE	0200
 #endif
+#define	RE_QUOTE	0200
 #define	TRIM	0177
 #ifndef CTRL
 #define	CTRL(c)	(c & 037)

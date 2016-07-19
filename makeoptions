@@ -8,21 +8,21 @@
 		w
 		q
 '%'
-	cc -E $* /tmp/$$.c >/tmp/foo.c
+	$* /tmp/$$.c >/tmp/foo.c
 	ex - /tmp/foo.c <<'X'
 		g/^# /d
 		set sh=/bin/csh
 		g/^[ 	]*$/d
 		1,/options/d
-		/}/-1,$d
-		1,$s/	"//
+		/};/-1,$d
+		1,$s/ { "//
 		1,$s/".*//
 		1m$
 		w! ex_vars.h
-		!rm -f %; num ex_vars.h >%
+		!rm -f %; cat -n ex_vars.h >%
 		e
 		$t0
-		1s/......../     0  /
+		1s/....../     0/
 		1,$s/\(......\)\(.*\)/#define	\U\2\L	\1/
 		1,$s/	 */	/g
 		g/  */s//	/g
