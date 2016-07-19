@@ -9,6 +9,8 @@
  */
 /* short	ospeed = -1; */
 
+static void zap(void);
+
 void
 gettmode(void)
 {
@@ -40,8 +42,9 @@ bool *sflags[] = {
 char **fkeys[10] = {
 	&F0, &F1, &F2, &F3, &F4, &F5, &F6, &F7, &F8, &F9
 };
-setterm(type)
-	char *type;
+
+void
+setterm(char *type)
 {
 	char *cgoto();
 	register int unknown, i;
@@ -104,7 +107,8 @@ setterm(type)
 		serror("%s: Unknown terminal type", type);
 }
 
-zap()
+static void
+zap(void)
 {
 	register char *namp;
 	register bool **fp;
@@ -125,9 +129,7 @@ zap()
 }
 
 char *
-longname(bp, def)
-	register char *bp;
-	char *def;
+longname(char *bp, char *def)
 {
 	register char *cp;
 
@@ -145,8 +147,7 @@ longname(bp, def)
 }
 
 char *
-fkey(i)
-	int i;
+fkey(int i)
 {
 	if (0 <= i && i <= 9)
 		return(*fkeys[i]);

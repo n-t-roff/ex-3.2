@@ -8,9 +8,20 @@
  * confirmed substitute.
  */
 static void snote(int, int);
+static int compsub(int);
+static void comprhs(int);
+static int dosubcon(bool, line *);
+static int confirmed(line *);
+static void ugo(int, int);
+static void dosub(void);
+static int fixcase(int);
+static void cerror(char *);
+static int same(int, int);
+static int advance(line *, line *);
+static int cclass(char *, int, int);
 
-global(k)
-	bool k;
+void
+global(bool k)
 {
 	register char *gp;
 	register int c;
@@ -109,8 +120,8 @@ out:
 bool	xflag;
 int	scount, slines, stotal;
 
-substitute(c)
-	int c;
+int
+substitute(int c)
 {
 	register line *addr;
 	register int n;
@@ -153,7 +164,8 @@ substitute(c)
 	return (stotal);
 }
 
-compsub(ch)
+static int
+compsub(int ch)
 {
 	register int seof, c, uselastre;
 	static int gsubf;
@@ -217,8 +229,8 @@ compsub(ch)
 	}
 }
 
-comprhs(seof)
-	int seof;
+static void
+comprhs(int seof)
 {
 	register char *rp, *orp;
 	register int c;
@@ -277,7 +289,8 @@ endrhs:
 	*rp++ = 0;
 }
 
-getsub()
+int
+getsub(void)
 {
 	register char *p;
 
@@ -288,9 +301,8 @@ getsub()
 	return (0);
 }
 
-dosubcon(f, a)
-	bool f;
-	line *a;
+static int
+dosubcon(bool f, line *a)
 {
 
 	if (execute(f, a) == 0)
@@ -302,8 +314,8 @@ dosubcon(f, a)
 	return (1);
 }
 
-confirmed(a)
-	line *a;
+static int
+confirmed(line *a)
 {
 	register int c, ch;
 
@@ -331,7 +343,9 @@ again:
 	return (ch == 'y');
 }
 
-getch()
+#if 0
+int
+getch(void)
 {
 	int c;
 
@@ -339,10 +353,10 @@ getch()
 		return (EOF);
 	return (c & TRIM);
 }
+#endif
 
-ugo(cnt, with)
-	int with;
-	int cnt;
+static void
+ugo(int cnt, int with)
 {
 
 	if (cnt > 0)
@@ -354,7 +368,8 @@ ugo(cnt, with)
 int	casecnt;
 bool	destuc;
 
-dosub()
+static void
+dosub(void)
 {
 	register char *lp, *sp, *rp;
 	int c;
@@ -422,8 +437,8 @@ ovflo:
 	strcLIN(genbuf);
 }
 
-fixcase(c)
-	register int c;
+static int
+fixcase(int c)
 {
 
 	if (casecnt == 0)
@@ -439,8 +454,7 @@ fixcase(c)
 }
 
 char *
-place(sp, l1, l2)
-	register char *sp, *l1, *l2;
+place(char *sp, char *l1, char *l2)
 {
 
 	while (l1 < l2) {
@@ -464,9 +478,8 @@ snote(int total, int lines)
 	flush();
 }
 
-compile(eof, oknl)
-	int eof;
-	int oknl;
+int
+compile(int eof, int oknl)
 {
 	register int c;
 	register char *ep;
@@ -674,16 +687,16 @@ defchar:
 	}
 }
 
-cerror(s)
-	char *s;
+static void
+cerror(char *s)
 {
 
 	expbuf[0] = 0;
 	error(s);
 }
 
-same(a, b)
-	register int a, b;
+static int
+same(int a, int b)
 {
 
 	return (a == b || value(IGNORECASE) &&
@@ -692,8 +705,8 @@ same(a, b)
 
 char	*locs;
 
-execute(gf, addr)
-	line *addr;
+int
+execute(int gf, line *addr)
 {
 	register char *p1, *p2;
 	register int c;
@@ -745,8 +758,8 @@ execute(gf, addr)
 
 #define	uletter(c)	(isalpha(c) || c == '_')
 
-advance(lp, ep)
-	register char *lp, *ep;
+static int
+advance(line *lp, line *ep)
 {
 	register char *curlp;
 	char *sp, *sp1;
@@ -857,10 +870,8 @@ star:
 	}
 }
 
-cclass(set, c, af)
-	register char *set;
-	register int c;
-	int af;
+static int
+cclass(char *set, int c, int af)
 {
 	register int n;
 

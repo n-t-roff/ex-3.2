@@ -66,9 +66,8 @@ char	tttrace[]	= { '/','d','e','v','/','t','t','y','x','x',0 };
  * force an early visual command, setting the external initev so
  * the q command in visual doesn't give command mode.
  */
-main(ac, av)
-	register int ac;
-	register char *av[];
+int
+main(int ac, char **av)
 {
 #ifndef VMUNIX
 	char *erpath = EXSTRINGS;
@@ -331,7 +330,7 @@ main(ac, av)
 	setexit();
 	commands(0, 0);
 	cleanup(1);
-	exit(0);
+	return 0;
 }
 
 /*
@@ -339,7 +338,8 @@ main(ac, av)
  * Main thing here is to get a new buffer (in fileinit),
  * rest is peripheral state resetting.
  */
-init()
+void
+init(void)
 {
 	register int i;
 
@@ -364,9 +364,10 @@ init()
  * as they are a backup even without preservation if they
  * are not removed.
  */
-onhup()
+void
+onhup(int i)
 {
-
+	(void)i;
 	if (chng == 0) {
 		cleanup(1);
 		exit(0);
@@ -388,9 +389,11 @@ onhup()
  * Then like a normal error (with the \n before Interrupt
  * suppressed in visual mode).
  */
-onintr()
+void
+onintr(int i)
 {
 
+	(void)i;
 #ifndef CBREAK
 	signal(SIGINT, onintr);
 #else
@@ -414,7 +417,8 @@ onintr()
  * In some critical sections we turn interrupts off,
  * but not very often.
  */
-setrupt()
+void
+setrupt(void)
 {
 
 	if (ruptible)
@@ -425,7 +429,8 @@ setrupt()
 #endif
 }
 
-preserve()
+int
+preserve(void)
 {
 
 	synctmp();
@@ -448,8 +453,7 @@ preserve()
  * Return last component of unix path name p.
  */
 char *
-tailpath(p)
-register char *p;
+tailpath(char *p)
 {
 	register char *r;
 

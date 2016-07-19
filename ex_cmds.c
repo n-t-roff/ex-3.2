@@ -767,7 +767,7 @@ numberit:
 					 * input which was a tty to suddenly be
 					 * turned into /dev/null.
 					 */
-					onhup();
+					onhup(0);
 				return;
 			}
 			if (addr2 != 0) {
