@@ -124,3 +124,5 @@ struct maps {
 struct maps arrows[MAXNOMACS];	/* macro defs - 1st 5 built in */
 char	mapspace[MAXCHARMACS];
 char	*msnext;	/* next free location in mapspace */
+
+int	map(int, struct maps *);

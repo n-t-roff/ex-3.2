@@ -53,7 +53,7 @@
 #include <termios.h>
 #include <fcntl.h>
 
-extern	int errno;
+int tputs(const char *, int, int (*)(int));
 
 #ifndef VMUNIX
 typedef	short	line;
@@ -304,7 +304,7 @@ char	*tgoto();
 char	*ttyname();
 line	*vback(line *, int);
 char	*vfindcol(int);
-char	*vgetline();
+char	*vgetline(int, char *, bool *);
 char	*vinit();
 char	*vpastwh(char *);
 char	*vskipwh(char *);
@@ -383,7 +383,7 @@ void	addtext(char *);
 void	setLAST(void);
 void	vsave(void);
 void	vmain(void);
-void	eend(int (*)());
+void	eend(void (*)());
 void	operate(int, int);
 void	vrep(int);
 void	vundo(void);

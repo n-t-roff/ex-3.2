@@ -81,7 +81,7 @@ vclreol(void)
 	i = WCOLS - destcol;
 	tp = vtube[destline] + destcol;
 	if (CE) {
-		if (IN && *tp || !ateopr()) {
+		if ((IN && *tp) || !ateopr()) {
 			vcsync();
 			vputp(CE, 1);
 		}
@@ -811,7 +811,11 @@ vishft(void)
 	if (IN && tshft) {
 		i = tshft;
 		do
+#ifdef BIT8
+			*--up = ' ';
+#else
 			*--up = ' ' | QUOTE;
+#endif
 		while (--i);
 	}
 	hold = oldhold;
@@ -830,7 +834,7 @@ viin(int c)
 	short oldhold = hold;
 
 	hold |= HOLDPUPD;
-	if (tabsize && (IM && EI) && inssiz - doomed > tabslack)
+	if (tabsize && (IM && EI) && inssiz - doomed > tabslack) {
 		/*
 		 * There is a tab out there which will be affected
 		 * by the insertion since there aren't enough doomed
@@ -869,6 +873,7 @@ viin(int c)
 				enddm();
 			}
 		}
+	}
 
 	/* 
 	 * Now put out the characters of the actual insertion.
@@ -937,18 +942,24 @@ viin(int c)
 					if (tabslack >= slakused)
 						continue;
 				}
+#ifdef BIT8
+				*tp = ' ';
+#else
 				*tp = ' ' | QUOTE;
+#endif
 			}
 		}
 		/*
 		 * Blank out the shifted positions to be tab positions.
 		 */
+#ifndef BIT8
 		if (shft) {
 			tp = vtube0 + tabend + shft;
 			for (i = tabsize - (inssiz - doomed) + shft; i > 0; i--)
 				if ((*--tp & QUOTE) == 0)
 					*tp = ' ' | QUOTE;
 		}
+#endif
 	}
 
 	/*
@@ -1095,7 +1106,11 @@ vputchar(int c)
 			 * A ``space''.
 			 */
 			if ((hold & HOLDPUPD) == 0)
+#ifdef BIT8
+				*tp = ' ';
+#else
 				*tp = QUOTE;
+#endif
 			destcol++;
 			return;
 		}
@@ -1155,7 +1170,7 @@ def:
 		 * that we have overstruct something.
 		 */
 		if (!insmode && d && d != ' ' && d != (c & TRIM)) {
-			if (EO && (OS || UL && (c == '_' || d == '_'))) {
+			if (EO && (OS || (UL && (c == '_' || d == '_')))) {
 				vputc(' ');
 				outcol++, destcol++;
 				back1();
@@ -1277,7 +1292,7 @@ physdc(int stcol, int endcol)
 	if (IN) {
 		up = vtube0 + stcol;
 		tp = vtube0 + endcol;
-		while (i = *tp++) {
+		while ((i = *tp++)) {
 			if ((i & (QUOTE|TRIM)) == QUOTE)
 				break;
 			*up++ = i;
