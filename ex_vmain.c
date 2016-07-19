@@ -14,6 +14,7 @@
 #define	forbid(a)	{ if (a) goto fonfon; }
 
 static void vzop(bool, int, int);
+static void grabtag(void);
 
 void
 vmain(void)
@@ -1025,7 +1026,8 @@ fonfon:
 /*
  * Grab the word after the cursor so we can look for it as a tag.
  */
-grabtag()
+static void
+grabtag(void)
 {
 	register char *cp, *dp;
 
@@ -1045,7 +1047,8 @@ grabtag()
  * Before appending lines, set up addr1 and
  * the command mode undo information.
  */
-prepapp()
+void
+prepapp(void)
 {
 
 	addr1 = dot;
@@ -1058,8 +1061,8 @@ prepapp()
  * Execute function f with the address bounds addr1
  * and addr2 surrounding cnt lines starting at dot.
  */
-vremote(cnt, f, arg)
-	int cnt, (*f)(), arg;
+void
+vremote(int cnt, void (*f)(int), int arg)
 {
 	register int oing = inglobal;
 

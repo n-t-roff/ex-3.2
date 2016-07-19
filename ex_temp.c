@@ -16,9 +16,35 @@ char	incorb[INCORB+1][BUFSIZ];
 #define	pagrnd(a)	((char *)(((intptr_t)a)&~(BUFSIZ-1)))
 int	stilinc;	/* up to here not written yet */
 
+struct	strreg {
+	short	rg_flags;
+	short	rg_nleft;
+	short	rg_first;
+	short	rg_last;
+} strregs[('z'-'a'+1) + ('9'-'0'+1)], *strp;
+
+struct	rbuf {
+	short	rb_prev;
+	short	rb_next;
+	char	rb_text[BUFSIZ - 2 * sizeof (short)];
+} *rbuf;
+short	rused[256];
+short	rnleft;
+short	rblock;
+short	rnext;
+char	*rbufcp;
+
 static void rbflush(void);
 static void blkio(int, void *, ssize_t (*)());
 static void tflush(void);
+static void regio(int, ssize_t (*)());
+static int REGblk(void);
+static struct strreg *mapreg(int);
+static void KILLreg(int);
+static int shread(void);
+static int getREG(void);
+static void kshift(void);
+static void YANKline(void);
 
 char	tfname[40];
 char	rfname[40];
@@ -76,8 +102,8 @@ dumbness:
 /* 	brk((char *)fendcore); */
 }
 
-cleanup(all)
-	bool all;
+void
+cleanup(bool all)
 {
 	if (all) {
 		putpad(TE);
@@ -110,7 +136,8 @@ ex_getline(line tl)
 		}
 }
 
-putline()
+line
+putline(void)
 {
 	register char *bp, *lp;
 	register int nl;
@@ -140,9 +167,7 @@ putline()
 }
 
 char *
-getblock(atl, iof)
-	line atl;
-	int iof;
+getblock(line atl, int iof)
 {
 	register int bno, off;
 	
@@ -271,7 +296,8 @@ oops:
 		goto oops;
 }
 
-TSYNC()
+void
+TSYNC(void)
 {
 
 	if (dirtcnt > 12) {
@@ -298,27 +324,8 @@ TSYNC()
  * BUG:		The default savind of deleted lines in numbered
  *		buffers may be rather inefficient; it hasn't been profiled.
  */
-struct	strreg {
-	short	rg_flags;
-	short	rg_nleft;
-	short	rg_first;
-	short	rg_last;
-} strregs[('z'-'a'+1) + ('9'-'0'+1)], *strp;
-
-struct	rbuf {
-	short	rb_prev;
-	short	rb_next;
-	char	rb_text[BUFSIZ - 2 * sizeof (short)];
-} *rbuf;
-short	rused[256];
-short	rnleft;
-short	rblock;
-short	rnext;
-char	*rbufcp;
-
-regio(b, iofcn)
-	short b;
-	int (*iofcn)();
+static void
+regio(int b, ssize_t (*iofcn)())
 {
 
 	if (rfile == -1) {
@@ -339,7 +346,8 @@ oops:
 	rblock = b;
 }
 
-REGblk()
+static int
+REGblk(void)
 {
 	register int i, j, m;
 
@@ -360,11 +368,11 @@ REGblk()
 	}
 	error("Out of register space (ugh)");
 	/*NOTREACHED*/
+	return 0;
 }
 
-struct	strreg *
-mapreg(c)
-	register int c;
+static struct strreg *
+mapreg(int c)
 {
 
 	if (isupper(c))
@@ -372,10 +380,8 @@ mapreg(c)
 	return (isdigit(c) ? &strregs[('z'-'a'+1)+(c-'0')] : &strregs[c-'a']);
 }
 
-int	shread();
-
-KILLreg(c)
-	register int c;
+static void
+KILLreg(int c)
 {
 	struct rbuf arbuf;
 	register struct strreg *sp;
@@ -395,8 +401,8 @@ KILLreg(c)
 	}
 }
 
-/*VARARGS*/
-shread()
+static int
+shread(void)
 {
 	struct front { short a; short b; };
 
@@ -405,10 +411,8 @@ shread()
 	return (0);
 }
 
-int	getREG();
-
-putreg(c)
-	int c;
+void
+putreg(int c)
 {
 	struct rbuf arbuf;
 	register line *odot = dot;
@@ -446,22 +450,23 @@ putreg(c)
 	notecnt = cnt;
 }
 
-partreg(c)
-	int c;
+int
+partreg(int c)
 {
 
 	return (mapreg(c)->rg_flags);
 }
 
-notpart(c)
-	register int c;
+void
+notpart(int c)
 {
 
 	if (c)
 		mapreg(c)->rg_flags = 0;
 }
 
-getREG()
+static int
+getREG(void)
 {
 	register char *lp = linebuf;
 	register int c;
@@ -487,8 +492,8 @@ getREG()
 	}
 }
 
-YANKreg(c)
-	register int c;
+void
+YANKreg(int c)
 {
 	struct rbuf arbuf;
 	register line *addr;
@@ -523,7 +528,8 @@ YANKreg(c)
 	killed();
 }
 
-kshift()
+static void
+kshift(void)
 {
 	register int i;
 
@@ -532,7 +538,8 @@ kshift()
 		copy(mapreg(i+1), mapreg(i), sizeof (struct strreg));
 }
 
-YANKline()
+static void
+YANKline(void)
 {
 	register char *lp = linebuf;
 	register struct rbuf *rp = rbuf;
@@ -573,10 +580,8 @@ rbflush(void)
 }
 
 /* Register c to char buffer buf of size buflen */
-regbuf(c, buf, buflen)
-int c;
-char *buf;
-int buflen;
+void
+regbuf(int c, char *buf, int buflen)
 {
 	struct rbuf arbuf;
 	register char *p, *lp;

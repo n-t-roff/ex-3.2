@@ -309,8 +309,8 @@ char	*vinit();
 char	*vpastwh(char *);
 char	*vskipwh(char *);
 void	put(void);
-int	putreg();
-int	YANKreg();
+void	putreg(int);
+void	YANKreg(int);
 void	delete(bool);
 int	filter();
 int	getfile();
@@ -463,6 +463,13 @@ void	plines(line *, line *, bool);
 void	pofix(void);
 void	undo(bool);
 void	cmdmac(int);
+int	qcolumn(char *, char *);
+void	cleanup(bool);
+line	putline(void);
+void	TSYNC(void);
+int	partreg(int);
+void	notpart(int);
+void	regbuf(int, char *, int);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.

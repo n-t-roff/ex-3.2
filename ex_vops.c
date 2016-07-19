@@ -25,6 +25,9 @@
  * low level optimization routines (which don't look for winning
  * via insert/delete character) will not lose too badly.
  */
+static int xdw(void);
+static void setpk(void);
+
 char	*vUA1, *vUA2;
 char	*vUD1, *vUD2;
 
@@ -155,7 +158,8 @@ vundo(void)
 /*
  * Initialize undo information before an append.
  */
-vnoapp()
+void
+vnoapp(void)
 {
 
 	vUD1 = vUD2 = cursor;
@@ -520,9 +524,8 @@ smallchange:
  * Actually counts are obsoleted, since if your terminal is slow
  * you are better off with slowopen.
  */
-voOpen(c, cnt)
-	int c;
-	register int cnt;
+void
+voOpen(int c, int cnt)
 {
 	register int ind = 0, i;
 	short oldhold = hold;
@@ -660,7 +663,8 @@ vfilter(void)
  * that wdot is reasonable.  Its name comes from
  *	xchange dotand wdot
  */
-xdw()
+static int
+xdw(void)
 {
 	register char *cp;
 	register int cnt;
@@ -731,7 +735,8 @@ xdw()
 /*
  * Routine for vremote to call to implement shifts.
  */
-vshift()
+void
+vshift(void)
 {
 
 	shift(op, 1);
@@ -746,7 +751,7 @@ vrep(int cnt)
 {
 	register int i, c;
 
-	if (cnt > strlen(cursor)) {
+	if (cnt > (ssize_t)strlen(cursor)) {
 		beep();
 		return;
 	}
@@ -786,7 +791,7 @@ vyankit(void)
 	if (wdot) {
 		if ((cnt = xdw()) < 0)
 			return;
-		vremote(cnt, yank, 0);
+		vremote(cnt, (void (*)(int))yank, 0);
 		setpk();
 		notenam = "yank";
 		vundkind = VNONE;
@@ -808,7 +813,8 @@ vyankit(void)
  * the first and last lines.  The compromise
  * is for put to be more clever.
  */
-setpk()
+static void
+setpk(void)
 {
 
 	if (wcursor) {

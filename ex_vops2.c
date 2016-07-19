@@ -330,7 +330,7 @@ vappend(int ch, int cnt, int indent)
 		 * correctly later.
 		 */
 		if (vundkind == VCHNG) {
-			vremote(1, yank, 0);
+			vremote(1, (void (*)(int))yank, 0);
 			undap1--;
 		}
 
@@ -407,7 +407,7 @@ vgetline(int cnt, char *gcursor, bool *aescaped)
 	register char *cp;
 	int x, y, iwhite;
 	char *iglobp;
-	int (*OO)() = Outchar;
+	void (*OO)() = Outchar;
 
 	/*
 	 * Clear the output state and counters
@@ -660,7 +660,7 @@ vbackup:
 			 * generated autoindent.  We count the ^D for repeat
 			 * purposes.
 			 */
-			if (c == iwhite && c != 0)
+			if (c == iwhite && c != 0) {
 				if (cp == gcursor) {
 					iwhite = backtab(c);
 					CDCNT++;
@@ -684,6 +684,7 @@ vbackup:
 					vputc(' ');
 					goto vbackup;
 				}
+			}
 			if (vglobp && vglobp - iglobp >= 2 &&
 			    (vglobp[-2] == '^' || vglobp[-2] == '0')
 			    && gcursor == ogcursor + 1)
