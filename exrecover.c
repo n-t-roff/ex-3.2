@@ -4,7 +4,7 @@
 #include "ex_tty.h"
 
 #include <stdio.h>
-#include <sys/dir.h>
+#include <dirent.h>
 #include <paths.h>
 
 /*
@@ -203,7 +203,7 @@ listfiles(char *dirname)
 {
 	DIR *dir;
 	struct dirent *dirent;
-	int ecount, qucmp();
+	int ecount;
 	register int f;
 	char *cp;
 	struct svfile *fp, svbuf[NENTRY];

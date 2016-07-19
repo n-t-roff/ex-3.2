@@ -102,9 +102,6 @@ short	outline;
 short	destcol;		/* Where the cursor should be */
 short	destline;
 
-#ifdef 	TIOCSETC
-struct	tchars ottyc, nttyc;	/* For V7 character masking */
-#endif
 struct	termios tty;		/* Always stty/gtty using this one structure */
 bool	normtty;		/* Have to restor normal mode from normf */
 struct	termios normf;			/* Restore tty flags to this (someday) */

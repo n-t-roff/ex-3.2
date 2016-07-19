@@ -346,6 +346,7 @@ vappend(int ch, int cnt, int indent)
 		if (state != VISUAL)
 			vshow(dot, NOLINE);
 		else {
+			/* TODO: 'i' might be used uninitialized (ck) */
 			i += LINE(vcline - 1);
 			vopen(dot, i);
 			if (value(SLOWOPEN))
@@ -566,10 +567,6 @@ vbackup:
 				ex_putchar('^');
 				vgoto(y, x);
 				c = getkey();
-#if defined(TIOCSETC) && !defined(USG3TTY)
-				if (c == ATTN)
-					c = nttyc.t_intrc;
-#endif
 				if (c != NL) {
 					if (doomed >= 0)
 						doomed++;
