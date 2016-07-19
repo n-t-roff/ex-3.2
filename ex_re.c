@@ -17,7 +17,7 @@ static void dosub(void);
 static int fixcase(int);
 static void cerror(char *);
 static int same(int, int);
-static int advance(line *, line *);
+static int advance(char *, char *);
 static int cclass(char *, int, int);
 
 void
@@ -759,7 +759,7 @@ execute(int gf, line *addr)
 #define	uletter(c)	(isalpha(c) || c == '_')
 
 static int
-advance(line *lp, line *ep)
+advance(char *lp, char *ep)
 {
 	register char *curlp;
 	char *sp, *sp1;

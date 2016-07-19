@@ -7,10 +7,13 @@
  * Since we translate the end of reads into the implied ^D's
  * we have different flavors of routines which do/don't return such.
  */
+static int getach(void);
+
 static	bool junkbs;
 short	lastc = '\n';
 
-ignchar()
+void
+ignchar(void)
 {
 	register int c;
 
@@ -19,7 +22,8 @@ ignchar()
 	while (c == CTRL('d'));
 }
 
-ex_getchar()
+int
+ex_getchar(void)
 {
 	register int c;
 
@@ -29,7 +33,8 @@ ex_getchar()
 	return (c);
 }
 
-getcd()
+int
+getcd(void)
 {
 	register int c;
 
@@ -48,7 +53,8 @@ again:
 	return (c);
 }
 
-peekchar()
+int
+peekchar(void)
 {
 
 	if (peekc == 0)
@@ -56,7 +62,8 @@ peekchar()
 	return (peekc);
 }
 
-peekcd()
+int
+peekcd(void)
 {
 
 	if (peekc == 0)
@@ -64,7 +71,8 @@ peekcd()
 	return (peekc);
 }
 
-getach()
+static int
+getach(void)
 {
 	register int c;
 	static char in_line[128];
@@ -117,7 +125,8 @@ top:
  */
 static	short	lastin;
 
-gettty()
+int
+gettty(void)
 {
 	register int c = 0;
 	register char *cp = genbuf;

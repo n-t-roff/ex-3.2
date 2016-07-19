@@ -511,6 +511,11 @@ void	global(bool);
 int	substitute(int);
 int	compile(int, int);
 int	execute(int, line *);
+void	ignchar(void);
+int	ex_getchar(void);
+int	getcd(void);
+int	peekchar(void);
+int	peekcd(void);
 
 /*
  * C doesn't have a (void) cast, so we have to fake it for lint's sake.
