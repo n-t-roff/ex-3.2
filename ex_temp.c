@@ -1,4 +1,5 @@
 /* Copyright (c) 1979 Regents of the University of California */
+#include <time.h>
 #include "ex.h"
 #include "ex_temp.h"
 #include "ex_vis.h"
@@ -41,7 +42,7 @@ static void regio(int, ssize_t (*)());
 static int REGblk(void);
 static struct strreg *mapreg(int);
 static void KILLreg(int);
-static int shread(void);
+static ssize_t shread(void);
 static int getREG(void);
 static void kshift(void);
 static void YANKline(void);
@@ -129,7 +130,7 @@ ex_getline(line tl)
 	bp = getblock(tl, READ);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*lp++ = *bp++)
+	while ((*lp++ = *bp++))
 		if (--nl == 0) {
 			bp = getblock(tl += INCRMT, READ);
 			nl = nleft;
@@ -150,7 +151,7 @@ putline(void)
 	bp = getblock(tl, WRITE);
 	nl = nleft;
 	tl &= ~OFFMSK;
-	while (*bp = *lp++) {
+	while ((*bp = *lp++)) {
 		if (*bp++ == '\n') {
 			*--bp = 0;
 			linebp = lp;
@@ -351,7 +352,7 @@ REGblk(void)
 {
 	register int i, j, m;
 
-	for (i = 0; i < sizeof rused / sizeof rused[0]; i++) {
+	for (i = 0; i < (ssize_t)(sizeof rused / sizeof rused[0]); i++) {
 		m = (rused[i] ^ 0177777) & 0177777;
 		if (i == 0)
 			m &= ~1;
@@ -401,7 +402,7 @@ KILLreg(int c)
 	}
 }
 
-static int
+static ssize_t
 shread(void)
 {
 	struct front { short a; short b; };

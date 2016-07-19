@@ -19,7 +19,7 @@ any(int c, char *s)
 {
 	register int x;
 
-	while (x = *s++)
+	while ((x = *s++))
 		if (x == c)
 			return (1);
 	return (0);
@@ -453,7 +453,7 @@ int
 qcolumn(char *lim, char *gp)
 {
 	register int x;
-	int (*OO)();
+	void (*OO)();
 
 	OO = Outchar;
 	Outchar = qcount;
@@ -578,54 +578,6 @@ smerror(char *seekpt, char *cp)
 		putpad(SE);
 }
 
-#define	std_nerrs (sizeof std_errlist / sizeof std_errlist[0])
-
-#define	error(i)	i
-
-char	*std_errlist[] = {
-	error("Error 0"),
-	error("Not super-user"),
-	error("No such file or directory"),
-	error("No such process"),
-	error("Interrupted system call"),
-	error("Physical I/O error"),
-	error("No such device or address"),
-	error("Argument list too long"),
-	error("Exec format error"),
-	error("Bad file number"),
-	error("No children"),
-	error("No more processes"),
-	error("Not enough core"),
-	error("Permission denied"),
-	error("Bad address"),
-	error("Block device required"),
-	error("Mount device busy"),
-	error("File exists"),
-	error("Cross-device link"),
-	error("No such device"),
-	error("Not a directory"),
-	error("Is a directory"),
-	error("Invalid argument"),
-	error("File table overflow"),
-	error("Too many open files"),
-	error("Not a typewriter"),
-	error("Text file busy"),
-	error("File too large"),
-	error("No space left on device"),
-	error("Illegal seek"),
-	error("Read-only file system"),
-	error("Too many links"),
-	error("Broken pipe")
-#ifndef QUOTA
-	, error("Math argument")
-	, error("Result too large")
-#else
-	, error("Quota exceeded")
-#endif
-};
-
-#undef	error
-
 char *
 strend(char *cp)
 {
@@ -645,21 +597,16 @@ strcLIN(char *dp)
 void
 syserror(void)
 {
-	register int e = errno;
-
 	dirtcnt = 0;
 	ex_putchar(' ');
-	if (e >= 0 && errno <= std_nerrs)
-		error(std_errlist[e]);
-	else
-		ierror("System error %d", e);
+	error(strerror(errno));
 }
 
 char *
 vfindcol(int i)
 {
 	register char *cp;
-	register int (*OO)() = Outchar;
+	void (*OO)() = Outchar;
 	char *s;
 
 	Outchar = qcount;

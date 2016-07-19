@@ -53,6 +53,11 @@
 #include <termios.h>
 #include <fcntl.h>
 
+int tgetent(char *, const char *);
+int tgetflag(char *);
+int tgetnum(char *);
+char *tgetstr(char *, char **);
+char *tgoto(const char *, int, int);
 int tputs(const char *, int, int (*)(int));
 
 #ifndef VMUNIX
@@ -280,7 +285,7 @@ line	*undadot;		/* If we saved all lines, dot reverts here */
 extern void	(*Outchar)();
 extern void	(*Pline)();
 extern void	(*Putchar)();
-int	(*oldhup)();
+void	(*oldhup)(int);
 void	(*setlist(bool))();
 void	(*setnumb(bool))();
 line	*address(char *);
@@ -294,7 +299,7 @@ char	*mesg(char *);
 char	*place(char *, char *, char *);
 char	*plural(long);
 line	*scanfor();
-line	*setin();
+void	setin(line *);
 char	*strcat();
 char	*strcpy();
 char	*strend(char *);
@@ -315,12 +320,12 @@ void	delete(bool);
 void	filter(int);
 int	getfile(void);
 int	getsub(void);
-int	gettty();
+int	gettty(void);
 void	join(int);
 void	listchar(int);
 void	normline(void);
 void	numbline(int);
-int	(*oldquit)();
+void	(*oldquit)(int);
 void	onhup(int);
 void	onintr(int);
 int	putch(int);

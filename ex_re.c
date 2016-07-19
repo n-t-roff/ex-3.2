@@ -1,6 +1,7 @@
 /* Copyright (c) 1979 Regents of the University of California */
 #include "ex.h"
 #include "ex_re.h"
+#include "ex_vis.h"
 
 /*
  * Global, substitute and regular expressions.
@@ -82,7 +83,6 @@ global(bool k)
 	}
 brkwh:
 	ungetchar(c);
-out:
 	ex_newline();
 	*gp++ = c;
 	*gp++ = 0;
@@ -380,7 +380,7 @@ dosub(void)
 	while (lp < loc1)
 		*sp++ = *lp++;
 	casecnt = 0;
-	while (c = *rp++) {
+	while ((c = *rp++)) {
 		if (c & QUOTE)
 			switch (c & TRIM) {
 
@@ -431,7 +431,7 @@ ovflo:
 	}
 	lp = loc2;
 	loc2 = sp + (linebuf - genbuf);
-	while (*sp++ = *lp++)
+	while ((*sp++ = *lp++))
 		if (sp >= &genbuf[LBSIZE])
 			goto ovflo;
 	strcLIN(genbuf);
@@ -535,7 +535,7 @@ complex:
 		if (c == eof || c == EOF) {
 			if (bracketp != bracket)
 cerror("Unmatched \\(|More \\('s than \\)'s in regular expression");
-			*ep++ = CEOF;
+			*ep++ = EX_CEOF;
 			if (c == EOF)
 				ungetchar(c);
 			return (eof);
@@ -660,13 +660,13 @@ cerror("Bad \\n|\\n in regular expression with n greater than the number of \\('
 		case '\n':
 			if (oknl) {
 				ungetchar(c);
-				*ep++ = CEOF;
+				*ep++ = EX_CEOF;
 				return (eof);
 			}
 cerror("Badly formed re|Missing closing delimiter for regular expression");
 
 		case '$':
-			if (peekchar() == eof || peekchar() == EOF || oknl && peekchar() == '\n') {
+			if (peekchar() == eof || peekchar() == EOF || (oknl && peekchar() == '\n')) {
 				*ep++ = CDOL;
 				continue;
 			}
@@ -699,8 +699,8 @@ static int
 same(int a, int b)
 {
 
-	return (a == b || value(IGNORECASE) &&
-	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a)));
+	return (a == b || (value(IGNORECASE) &&
+	   ((islower(a) && toupper(a) == b) || (islower(b) && toupper(b) == a))));
 }
 
 char	*locs;
@@ -762,8 +762,6 @@ static int
 advance(char *lp, char *ep)
 {
 	register char *curlp;
-	char *sp, *sp1;
-	int c;
 
 	for (;;) switch (*ep++) {
 
@@ -796,7 +794,7 @@ advance(char *lp, char *ep)
 			continue;
 		return (0);
 
-	case CEOF:
+	case EX_CEOF:
 		loc2 = lp;
 		return (1);
 
@@ -815,11 +813,11 @@ advance(char *lp, char *ep)
 		return (0);
 
 	case CBRA:
-		braslist[*ep++] = lp;
+		braslist[(int)*ep++] = lp;
 		continue;
 
 	case CKET:
-		braelist[*ep++] = lp;
+		braelist[(int)*ep++] = lp;
 		continue;
 
 	case CDOT|STAR:
