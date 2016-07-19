@@ -65,7 +65,7 @@ vundo(void)
 	register char *cp;
 	char temp[LBSIZE];
 	bool savenote;
-	int (*OO)();
+	void (*OO)();
 	short oldhold = hold;
 
 	switch (vundkind) {
@@ -265,9 +265,10 @@ vdelete(int c)
 			vputchar('@');
 		}
 		wdot = dot;
-		vremote(i, delete, 0);
+		vremote(i, (void (*)(int))delete, 0);
 		notenam = "delete";
 		DEL[0] = 0;
+		DEL[-1] = 0;
 		killU();
 		vreplace(vcline, i, 0);
 		if (wdot > dol)
@@ -385,7 +386,7 @@ vchange(int c)
 		 * case we are told to put.
 		 */
 		addr = dot;
-		vremote(cnt, delete, 0);
+		vremote(cnt, (void (*)(int))delete, 0);
 		setpk();
 		notenam = "delete";
 		if (c != 'd')
@@ -395,6 +396,7 @@ vchange(int c)
 		 * rather than the deleted lines.
 		 */
 		DEL[0] = 0;
+		DEL[-1] = 0;
 		if (cnt > 1)
 			killU();
 
@@ -530,7 +532,7 @@ voOpen(int c, int cnt)
 	register int ind = 0, i;
 	short oldhold = hold;
 
-	if (value(SLOWOPEN) || value(REDRAW) && AL && DL)
+	if (value(SLOWOPEN) || (value(REDRAW) && AL && DL))
 		cnt = 1;
 	vsave();
 	setLAST();
@@ -597,7 +599,7 @@ vshftop(void)
 	if ((cnt = xdw()) < 0)
 		return;
 	addr = dot;
-	vremote(cnt, vshift, 0);
+	vremote(cnt, (void (*)(int))vshift, 0);
 	vshnam[0] = op;
 	notenam = vshnam;
 	dot = addr;
@@ -796,6 +798,7 @@ vyankit(void)
 		notenam = "yank";
 		vundkind = VNONE;
 		DEL[0] = 0;
+		DEL[-1] = 0;
 		wdot = NOLINE;
 		if (notecnt <= vcnt - vcline && notecnt < value(REPORT))
 			notecnt = 0;

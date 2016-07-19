@@ -188,10 +188,10 @@ short	holdupd;		/* Hold off update when echo line is too long */
  * Miscellaneous variables
  */
 short	CDCNT;			/* Count of ^D's in insert on this line */
-char	DEL[VBSIZE];		/* Last deleted text */
+char	DEL_BUF[VBSIZE + 1];		/* Last deleted text */
 bool	HADUP;			/* This insert line started with ^ then ^D */
 bool	HADZERO;		/* This insert line started with 0 then ^D */
-char	INS[VBSIZE];		/* Last inserted text */
+char	INS_BUF[VBSIZE + 1];		/* Last inserted text */
 int	Vlines;			/* Number of file lines "before" vi command */
 int	Xcnt;			/* External variable holding last cmd's count */
 bool	Xhadcnt;		/* Last command had explicit count? */
@@ -225,13 +225,15 @@ char	vreg;			/* Register for this command */
 short	wdkind;			/* Liberal/conservative words? */
 char	workcmd[5];		/* Temporary for lastcmd */
 
+#define INS (INS_BUF + 1)
+#define DEL (DEL_BUF + 1)
 
 /*
  * Macros
  */
 #define	INF		30000
 #define	LASTLINE	LINE(vcnt)
-#define	OVERBUF		QUOTE
+#define	OVERBUF		1
 #define	beep		obeep
 #define	cindent()	((outline - vlinfo[vcline].vliny) * WCOLS + outcol)
 #define	vputp(cp, cnt)	tputs(cp, cnt, vputch)
@@ -260,7 +262,7 @@ void	vnline(char *);
 void	vopen(line *, int);
 int	vreopen(int, int, int);
 int	vglitchup(int, int);
-int	vinslin(int, int, int);
+void	vinslin(int, int, int);
 void	vopenup(int, bool, int);
 void	vrollup(int);
 void	vup1(void);
@@ -313,3 +315,8 @@ void	prepapp(void);
 void	vremote(int, void (*)(int), int);
 void	vnoapp(void);
 void	voOpen(int, int);
+void	oop(void);
+void	ovbeg(void);
+void	fixzero(void);
+void	undvis(void);
+void	setwind(void);

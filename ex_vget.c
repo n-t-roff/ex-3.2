@@ -125,7 +125,7 @@ again:
 				d = toupper(c);
 			else {
 				colp = "({)}!|^~'~";
-				while (d = *colp++)
+				while ((d = *colp++))
 					if (d == c) {
 						d = *colp++;
 						break;
@@ -206,7 +206,7 @@ int
 readecho(int c)
 {
 	register char *sc = cursor;
-	register int (*OP)();
+	void (*OP)();
 	bool waste;
 	register int OPeek;
 
@@ -221,7 +221,7 @@ readecho(int c)
 	vgoto(WECHO, 1);
 	cursor = linebuf; linebuf[0] = 0; genbuf[0] = c;
 	if (peekbr()) {
-		if (!INS[0] || (INS[0] & (QUOTE|TRIM)) == OVERBUF)
+		if (!INS[0] || (INS[-1] & OVERBUF))
 			goto blewit;
 		vglobp = INS;
 	}
@@ -274,7 +274,7 @@ addtext(char *cp)
 	if (vglobp)
 		return;
 	addto(INS, cp);
-	if ((INS[0] & (QUOTE|TRIM)) == OVERBUF)
+	if (INS[-1] & OVERBUF)
 		lastcmd[0] = 0;
 }
 
@@ -297,6 +297,7 @@ setBUF(char *BUF)
 	c = *wp;
 	*wp = 0;
 	BUF[0] = 0;
+	BUF[-1] = 0;
 	addto(BUF, cursor);
 	*wp = c;
 }
@@ -305,10 +306,10 @@ static void
 addto(char *buf, char *str)
 {
 
-	if ((buf[0] & (QUOTE|TRIM)) == OVERBUF)
+	if (buf[-1] & OVERBUF)
 		return;
 	if (strlen(buf) + strlen(str) + 1 >= VBSIZE) {
-		buf[0] = OVERBUF;
+		buf[-1] |= OVERBUF;
 		return;
 	}
 	ignore(strcat(buf, str));
@@ -325,7 +326,7 @@ noteit(bool must)
 {
 	register int sdl = destline, sdc = destcol;
 
-	if (notecnt < 2 || !must && state == VISUAL)
+	if (notecnt < 2 || (!must && state == VISUAL))
 		return (0);
 	splitw++;
 	if (WBOT == WECHO)
@@ -405,7 +406,7 @@ map(int c, struct maps *maps)
 		if (trace)
 			fprintf(trace,"d=%d, ",d);
 #endif
-		if (p = maps[d].cap) {
+		if ((p = maps[d].cap)) {
 			for (q=b; *p; p++, q++) {
 #ifdef MDEBUG
 				if (trace)

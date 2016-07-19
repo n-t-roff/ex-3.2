@@ -69,7 +69,7 @@ takeout(char *BUF)
 		cursor = cp;
 	}
 	setBUF(BUF);
-	if ((BUF[0] & (QUOTE|TRIM)) == OVERBUF)
+	if (BUF[-1] & OVERBUF)
 		beep();
 }
 
@@ -172,7 +172,7 @@ vappend(int ch, int cnt, int indent)
 	 * so far (e.g. if we are a change.)
 	 */
 	if ((vglobp && *vglobp == 0) || peekbr()) {
-		if ((INS[0] & (QUOTE|TRIM)) == OVERBUF) {
+		if (INS[-1] & OVERBUF) {
 			beep();
 			if (!splitw)
 				ungetkey('u');
@@ -193,6 +193,7 @@ vappend(int ch, int cnt, int indent)
 		 * a new inserted text for repeat.
 		 */
 		INS[0] = 0;
+		INS[-1] = 0;
 
 	/*
 	 * For wrapmargin to hack away second space after a '.'

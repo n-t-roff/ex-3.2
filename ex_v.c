@@ -46,13 +46,18 @@
  *		absolute motions, contextual displays, line depth determination
  */
 
+static void ovend(struct termios);
+static void vok(char *);
+
+static char atube[TUBESIZE + LBSIZE];
+
 /*
  * Enter open mode
  */
-oop()
+void
+oop(void)
 {
 	register char *ic;
-	static char atube[TUBESIZE + LBSIZE];
 	struct termios f;
 
 	ovbeg();
@@ -113,7 +118,8 @@ oop()
 	ovend(f);
 }
 
-ovbeg()
+void
+ovbeg(void)
 {
 
 	if (!value(OPEN))
@@ -127,6 +133,7 @@ ovbeg()
 	dot = addr2;
 }
 
+static void
 ovend(struct termios f)
 {
 
@@ -152,7 +159,6 @@ void
 vop(void)
 {
 	register int c;
-	static char atube[TUBESIZE + LBSIZE];
 	struct termios f;
 
 	if (!CA && UP == NOSTR) {
@@ -204,7 +210,8 @@ toopen:
  * empty buffer since routines internally
  * demand at least one line.
  */
-fixzero()
+void
+fixzero(void)
 {
 
 	if (dol == zero) {
@@ -247,7 +254,8 @@ savevis(void)
  * Restore a sensible state after a visual/open, moving the saved
  * stuff back to [unddol,dol], and killing the partial line kill indicators.
  */
-undvis()
+void
+undvis(void)
 {
 
 	if (ruptible)
@@ -265,7 +273,8 @@ undvis()
  * Set the window parameters based on the base state bastate
  * and the available buffer space.
  */
-setwind()
+void
+setwind(void)
 {
 
 	WCOLS = COLUMNS;
@@ -304,8 +313,8 @@ setwind()
  * If so, then divide the screen buffer up into lines,
  * and initialize a bunch of state variables before we start.
  */
-vok(atube)
-	register char *atube;
+static void
+vok(char *atube)
 {
 	register int i;
 
@@ -343,9 +352,10 @@ vok(atube)
 }
 
 #ifdef CBREAK
-vintr()
+void
+vintr(int i)
 {
-
+	(void)i;
 	signal(SIGINT, vintr);
 	if (vcatch)
 		onintr();
