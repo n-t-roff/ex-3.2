@@ -1073,5 +1073,9 @@ iostats(void)
 		noonl();
 		flush();
 	}
-	return (cntnull != 0 || cntodd != 0);
+	return (cntnull != 0
+#ifndef BIT8
+	    || cntodd != 0
+#endif
+	    );
 }
