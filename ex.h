@@ -125,9 +125,9 @@ extern struct	option options[NOPTS + 1];
  * registers are never declared character.
  */
 #ifdef BIT8
-#define	QUOTE	0400
+# define	QUOTE	0400
 #else
-#define	QUOTE	0200
+# define	QUOTE	0200
 #endif
 #define	RE_QUOTE	0200
 #define	TRIM	0177

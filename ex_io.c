@@ -200,12 +200,12 @@ glob(struct glob *gp)
 		register char *v = genbuf + 5;		/* strlen("echo ") */
 
 		for (;;) {
-			while (isspace(*v))
+			while (isspace((int)*v))
 				v++;
 			if (!*v)
 				break;
 			*argv++ = cp;
-			while (*v && !isspace(*v))
+			while (*v && !isspace((int)*v))
 				*cp++ = *v++;
 			*cp++ = 0;
 			gp->argc0++;
@@ -906,9 +906,9 @@ getfile(void)
 			cntodd++;
 #ifndef BIT8
 			c &= TRIM;
-#endif
 			if (c == 0)
 				continue;
+#endif
 		}
 		*lp++ = c;
 	} while (c != '\n');

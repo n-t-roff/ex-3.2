@@ -3,7 +3,7 @@
 #include "ex_tty.h"
 #include "ex_vis.h"
 
-#define	blank()		isspace(wcursor[0])
+#define	blank()		isspace((int)wcursor[0])
 #define	forbid(a)	if (a) goto errlab;
 
 char	vscandir[2] =	{ '/', 0 };
@@ -262,7 +262,7 @@ ein:
 	 */
 	case ',':
 		forbid (lastFKND == 0);
-		c = isupper(lastFKND) ? tolower(lastFKND) : toupper(lastFKND);
+		c = isupper((int)lastFKND) ? tolower((int)lastFKND) : toupper((int)lastFKND);
 		ungetkey(lastFCHR);
 		if (vglobp == 0)
 			vglobp = "";
@@ -641,7 +641,7 @@ errlab:
 		if (any(*globp, "^+-."))
 			c = *globp++;
 		i = 0;
-		while (isdigit(*globp))
+		while (isdigit((int)*globp))
 			i = i * 10 + *globp++ - '0';
 		if (*globp)
 			c = *globp++;
@@ -789,7 +789,7 @@ int
 wordof(int which, char *wc)
 {
 
-	if (isspace(*wc))
+	if (isspace((int)*wc))
 		return (0);
 	return (!wdkind || wordch(wc) == which);
 }

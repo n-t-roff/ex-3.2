@@ -507,7 +507,7 @@ bakchar:
 			 */
 			case CTRL('w'):
 				wdkind = 1;
-				for (cp = gcursor; cp > ogcursor && isspace(cp[-1]); cp--)
+				for (cp = gcursor; cp > ogcursor && isspace((int)cp[-1]); cp--)
 					continue;
 				for (c = wordch(cp - 1);
 				    cp > ogcursor && wordof(c, cp - 1); cp--)
