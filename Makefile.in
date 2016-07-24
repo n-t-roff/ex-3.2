@@ -96,21 +96,20 @@ distclean: clean
 
 install: ${BINDIR} ${LIBDIR} ${MANDIR}/man1 ${SHAREDIR}
 	install a.out ${BINDIR}/ex
-	for i in vi view edit; do \
+	for i in vi e edit; do \
 		ln -sf ${BINDIR}/ex ${BINDIR}/$$i; \
 	done
 	for i in ex vi; do \
 		install -m 644 $$i.1 ${MANDIR}/man1/; \
 	done
 	ln -sf ${MANDIR}/man1/ex.1 ${MANDIR}/man1/edit.1
-	ln -sf ${MANDIR}/man1/vi.1 ${MANDIR}/man1/view.1
 	for i in recover preserve; do \
 		install ex$$i ${LIBDIR}/ex${VERSION}$$i; \
 	done
 	install -m 644 doc/*.pdf ${SHAREDIR}/
 
 uninstall:
-	for i in ex vi view edit; do \
+	for i in ex vi e edit; do \
 		rm -f ${BINDIR}/$$i; \
 		rm -f ${MANDIR}/man1/$$i.1; \
 	done
@@ -124,8 +123,3 @@ ${BINDIR} ${LIBDIR} ${MANDIR}/man1 ${SHAREDIR}:
 
 ${LIBMALLOCDIR}/libmapmalloc.a:
 	cd ${LIBMALLOCDIR} && make CFLAGS="${CFLAGS} ${DEB}"
-
-lint:
-	lint ex.c ex_?*.c
-	lint -u exrecover.c
-	lint expreserve.c

@@ -58,12 +58,20 @@ $ make distclean
 
 Features which had been invented after version 3.2:
 
+* `ZZ`, `:x` (use `:wq`)
+  (New in ex-3.3.)
+* `:map!`
+  (New in ex-3.3.)
 * Job control
+  (New in ex-3.4.)
 * The comment character `"`.
   If you need to comment something in `~/.exrc`,
   put these lines to the end of the file
   and insert an empty line before them.
-* `ZZ`, `:x` and `:map!`
+  (New in ex-3.4.)
+* There is no read-only mode.
+  Program name `view` and option `-R` did not exist.
+  (New in ex-3.4.)
 * The documents
   [viin.pdf](http://n-t-roff.github.io/ex/3.2/viin.pdf)
   and
