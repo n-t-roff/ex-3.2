@@ -835,6 +835,10 @@ doinit:
 			 * command mode).  This is clumsy.
 			 */
 			d = peekc; ungetchar(0);
+			onumber = value(NUMBER);
+			olist = value(LIST);
+			OPline = Pline;
+			OPutchar = Putchar;
 			CATCH
 				/*
 				 * Save old values of options so we can

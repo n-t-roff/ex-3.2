@@ -1222,7 +1222,7 @@ void
 physdc(int stcol, int endcol)
 {
 	register char *tp, *up;
-	char *tpe;
+	char *tpe = NULL;
 	register int i;
 	register int nc = endcol - stcol;
 

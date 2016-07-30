@@ -514,7 +514,7 @@ scrapbad(void)
 	register line *ip;
 	struct stat stbuf;
 	off_t size, maxt;
-	int bno, cnt, bad, was;
+	int bno, cnt = 0, bad, was;
 	char bk[BUFSIZ];
 
 	ignore(fstat(tfile, &stbuf));
