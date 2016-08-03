@@ -40,13 +40,7 @@ LIBMALLOCDIR=libmapmalloc/common
 #MALLOC_O=${LIBMALLOCDIR}/libmapmalloc.a
 #
 CTAGS=	${BINDIR}/ctags
-DEBUGFLAGS=-Wall -Wextra \
-	#-g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls \
-	-fsanitize=undefined \
-	-fsanitize=integer \
-	-fsanitize=address
-NONDEBUGFLAGS=	
-DEB=	${DEBUGFLAGS}
+DEB=	-Wall -Wextra ${__CDBG} ${__SAN}
 #
 # If -DBIT8 is used, files containing 8-bit data can be edited.  Nethertheless
 # it is not possible to insert or change 8-bit characters.
@@ -56,7 +50,7 @@ DEB=	${DEBUGFLAGS}
 #
 _CFLAGS=${CFLAGS} -DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
 	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB} -DBIT8
-_LDFLAGS=${LDFLAGS} ${DEB} ${DEFINES} -s
+_LDFLAGS=${LDFLAGS} ${__SAN} ${DEFINES} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
 	ex_v.o ex_vadj.o ex_vget.o ex_vmain.o ex_voperate.o \
