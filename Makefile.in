@@ -49,7 +49,7 @@ DEB=	-Wall -Wextra ${__CDBG} ${__SAN}
 # 8-bit characters in this case!
 #
 _CFLAGS=${CFLAGS} -DTABS=8 -DLISPCODE -DCHDIR -DUCVISUAL -DMACROS -DVMUNIX -DCBREAK \
-	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB} -DBIT8
+	${D_SBRK} -DLIBDIR='"${LIBDIR}"' ${DEB} -DBIT8 -fcommon
 _LDFLAGS=${LDFLAGS} ${__SAN} ${DEFINES} -s
 OBJS=	ex.o ex_addr.o ex_cmds.o ex_cmds2.o ex_cmdsub.o ex_data.o ex_get.o \
 	ex_io.o ex_put.o ex_re.o ex_set.o ex_subr.o ex_temp.o ex_tty.o \
